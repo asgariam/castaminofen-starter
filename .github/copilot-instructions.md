@@ -2220,3 +2220,45 @@ The AI must always provide:
 4. Recommended commit message
 
 before stopping.
+
+# 90. Script Documentation Rules
+
+Every script created in this project MUST be documented.
+
+A script is any executable command defined in:
+
+- package.json scripts
+- shell files
+- node scripts
+- database scripts
+- deployment scripts
+- automation scripts
+- CI/CD scripts
+
+Before creating a new script:
+
+1. Check if an existing script already solves the problem.
+2. Prefer extending existing scripts instead of creating duplicates.
+3. Give the script a clear and meaningful name.
+
+After creating or modifying a script:
+
+Update:
+
+docs/scripts.md
+
+The documentation entry MUST include:
+
+- Script name
+- Location
+- Purpose
+- Usage command
+- Required environment variables
+- Expected output
+- Notes or warnings
+
+Never create undocumented scripts.
+
+Never remove or rename scripts without updating docs/scripts.md.
+
+The scripts documentation is the single source of truth for project commands.
