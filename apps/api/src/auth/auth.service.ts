@@ -65,6 +65,7 @@ export class AuthService {
         secret: this.config.get<string>('JWT_REFRESH_SECRET'),
       });
     } catch (e) {
+      void e;
       throw new ForbiddenException('Access denied');
     }
 

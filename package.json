@@ -7,9 +7,16 @@
     "dev:web": "pnpm --filter @castaminofen/web dev",
     "dev:api": "pnpm --filter @castaminofen/api start:dev",
     "build": "pnpm --filter @castaminofen/shared-types build && pnpm --filter @castaminofen/web build && pnpm --filter @castaminofen/api build",
-    "lint": "pnpm --filter @castaminofen/web lint"
+    "lint": "pnpm -r lint",
+    "lint:web": "pnpm --filter @castaminofen/web lint",
+    "lint:api": "pnpm --filter @castaminofen/api lint",
+    "lint:fix": "pnpm exec eslint . --ext .ts,.tsx --fix"
   },
   "devDependencies": {
-    "prettier": "^3.4.1"
+    "prettier": "^3.4.1",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "14.2.15",
+    "@typescript-eslint/parser": "^8.64.0",
+    "@typescript-eslint/eslint-plugin": "^8.64.0"
   }
 }
