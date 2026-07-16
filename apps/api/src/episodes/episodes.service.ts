@@ -5,7 +5,7 @@ import { PrismaService } from '../prisma/prisma.service';
 export class EpisodesService {
   constructor(private prisma: PrismaService) {}
 
-  async create(data: { podcastId: string; title: string; description?: string; audioUrl?: string; publishedAt?: Date }) {
+  async create(data: { podcastId: string; title: string; description?: string; audioUrl?: string; publishedAt?: string }) {
     return this.prisma.episode.create({ data });
   }
 
