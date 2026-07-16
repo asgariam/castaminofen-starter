@@ -2150,6 +2150,14 @@ No phase is considered complete until its documentation file is updated.
 
 The repository documentation is part of the product.
 
+## Script Documentation Rule
+
+Whenever creating, modifying, or removing any project script:
+
+1. Update docs/scripts.md immediately.
+2. Add the script name, location, command, purpose, and usage notes.
+3. Never introduce undocumented scripts.
+
 # 90. Changelog Maintenance Rule
 
 The changelog is mandatory documentation.
