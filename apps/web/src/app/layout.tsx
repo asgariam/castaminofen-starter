@@ -1,7 +1,13 @@
 import type { Metadata } from 'next';
+import { Vazirmatn } from 'next/font/google';
 import './globals.css';
-import { ReactQueryProvider } from '@/providers/react-query-provider';
-import { Header } from '@/components/header';
+import { AppProviders } from '@/providers/app-providers';
+
+const vazirmatn = Vazirmatn({
+  subsets: ['arabic', 'latin'],
+  variable: '--font-vazirmatn',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: 'Castaminofen',
@@ -10,12 +16,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="fa" dir="rtl" className={vazirmatn.variable}>
       <body>
-        <ReactQueryProvider>
-          <Header />
-          {children}
-        </ReactQueryProvider>
+        <AppProviders>{children}</AppProviders>
       </body>
     </html>
   );

@@ -19,6 +19,7 @@
 - Phase 2.4.2 — Backend Build Fix: خطاهای TypeScript build backend با بررسی و بازسازی تایپ‌های Prisma برطرف شد و سرویس‌های User، Podcast و Episode مجدداً کامپایل شدند.
 - Phase 2.4.3 — Podcast UI Integration: تجربه‌ی پادکست در frontend با APIها ادغام شد و صفحه‌های list/detail/create/edit/delete با React Query و کامپوننت‌های بازاستفاده‌پذیر پیاده‌سازی شدند.
 - Phase 2.4.4 — Repository Stabilization & Documentation Alignment: حفاظت از فایل‌های محیطی، هم‌سویی مستندات با ساختار واقعی ریپو و آماده‌سازی برای بررسی سلامت کلی مخزن انجام شد.
+- Phase 2.5.1 — Frontend Foundation Setup: استقرار پایه‌ی Tailwind/PostCSS، tokens استایل، فونت Vazirmatn، و provider wrapper اولیه برای وب انجام شد.
 
 **۳. فاز فعال فعلی**
 - وضعیت: Phase 2.4.4 تکمیل شد.
