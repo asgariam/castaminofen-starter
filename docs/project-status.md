@@ -96,3 +96,9 @@
 - URLها، query keys، API contracts و رفتار UI بدون تغییر باقی ماندند.
 - اعتبارسنجی با lint و build وب انجام شد و هر دو با موفقیت گذشتند.
 
+## 15. وضعیت فاز 2.9
+- فاز 2.9 — Player Feature Boundary Adoption Plan به‌صورت documentation-only و بدون تغییر runtime اجرا شد.
+- مرز مالکیت آینده برای Player در سطح frontend تحلیل و مستندسازی شد و در [docs/phases/phase-2.9-player-feature-boundary-plan.md](./phases/phase-2.9-player-feature-boundary-plan.md) ثبت گردید.
+- وابستگی‌های فعلی بین Episode و playback infrastructure شناسایی شد و پیش‌نویس ownership boundary برای Player، Episode، shared layer و API/data boundary ترسیم شد.
+- این فاز بدون تغییر route، API contract، dependency یا رفتار runtime انجام شد.
+
