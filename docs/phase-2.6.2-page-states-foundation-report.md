@@ -79,6 +79,10 @@ Establish reusable frontend page-state patterns for Castaminofen without introdu
 
 - Feature-specific empty results, data-fetching states, and business error handling remain intentionally out of scope.
 
+## Scope Clarification
+
+این فاز محدود به الگوهای loading، empty و error برای صفحه‌های پایه بود. featureهای MVP موجود در ریپو، از جمله auth و جریان‌های podcast/episode، خارج از محدوده‌ی این فاز باقی می‌مانند و همچنان فعال‌اند.
+
 ## Next Recommended Phase
 
 - Await review confirmation before proceeding to the next frontend phase.

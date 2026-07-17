@@ -70,6 +70,10 @@ Establish a reusable frontend design-system foundation for Castaminofen without 
 
 - Product-specific screens and business-facing UI remain deferred.
 
+## Scope Clarification
+
+این فاز محدود به پایه‌ی سیستم طراحی و لایه‌ی UI مشترک بود. featureهای MVP موجود در ریپو، از جمله auth و صفحات podcast/episode، خارج از محدوده‌ی این فاز باقی می‌مانند و همچنان فعال‌اند.
+
 ## Next Recommended Phase
 
 - Phase 2.5.3 can proceed once the shared design-system foundation has been reviewed and approved.

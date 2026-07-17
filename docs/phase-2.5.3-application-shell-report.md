@@ -74,6 +74,10 @@ Implement a reusable application shell foundation in the frontend without adding
 - BottomNavigation remains a layout placeholder only; no real routes, navigation flow, or product tabs were implemented.
 - No Home page implementation, Search feature, Library feature, Profile feature, Podcast UI, or Player UI were introduced.
 
+## Scope Clarification
+
+این فاز محدود به ساخت app shell و لایه‌ی layout پایه بود. featureهای MVP موجود در ریپو، از جمله auth و pages مرتبط با podcast/episode، خارج از محدوده‌ی این فاز باقی می‌مانند و همچنان فعال‌اند.
+
 ## Next Recommended Phase
 
 Phase 2.5.4 — Frontend Infrastructure Foundation

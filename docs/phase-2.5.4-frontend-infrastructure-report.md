@@ -88,6 +88,10 @@ Implement the frontend infrastructure foundation for future feature development 
 - Authentication headers and token refresh logic remain out of scope.
 - Feature-specific hooks and UI components remain deferred.
 
+## Scope Clarification
+
+این فاز محدود به زیرساخت فرانت‌اند بود. featureهای MVP موجود در ریپو، از جمله auth و جریان‌های podcast/episode، خارج از محدوده‌ی این فاز باقی می‌مانند و همچنان فعال‌اند.
+
 ## Next Recommended Phase
 
 Pending project roadmap approval.

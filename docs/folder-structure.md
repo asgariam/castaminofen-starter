@@ -1,148 +1,91 @@
 # Folder Structure — Castaminofen
 
-پیشنهاد: پروژه به‌صورت **Monorepo** (با pnpm workspaces یا Turborepo) نگه‌داری شود تا Frontend و Backend در یک Repo باشند و به‌راحتی Type/Config مشترک Share شود. (در صورت ترجیح به دو Repo مجزا هم قابل تقسیم است — تصمیم نهایی در Phase 0.)
+این فایل ساختار فعلی ریپو را بر اساس واقعیت کد جاری توصیف می‌کند. هدف، ثبت ساختار موجود بدون افزودن پوشه‌های ساختگی یا تغییر در معماری است.
 
-## وضعیت فعلی ریپو (Phase 2.4.4)
+---
 
-- در نسخه‌ی فعلی، ماژول‌های بک‌اند مستقیم در مسیر [apps/api/src](../apps/api/src) قرار دارند؛ برای مثال [apps/api/src/auth](../apps/api/src/auth)، [apps/api/src/podcasts](../apps/api/src/podcasts) و [apps/api/src/episodes](../apps/api/src/episodes). این ساختار برای MVP فعلی پذیرفته شده و در حال حاضر به‌صورت رسمی به `src/modules` مهاجرت نشده است.
-- ویژگی‌هایی مانند RSS Sync، BullMQ/Queue، Offline/PWA و Player کامل هنوز در این نسخه به‌صورت کامل پیاده‌سازی نشده‌اند و به‌عنوان کارهای آینده/غیر-MVP در این مستندات ثبت می‌شوند.
-- ساختار فعلی برای MVP کافی است و در این فاز فقط تنظیم و هم‌سوسازی با واقعیت جاری انجام شده است.
+## وضعیت فعلی ریپو
 
-```
+- پروژه به‌صورت مونو-ریپو با دو اپ اصلی در [apps/api](../apps/api) و [apps/web](../apps/web) اجرا می‌شود.
+- فرانت‌اند در [apps/web/src](../apps/web/src) با App Router و ساختار feature-based فعلی نگهداری می‌شود.
+- بک‌اند در [apps/api/src](../apps/api/src) با پوشه‌های feature-based مستقیم پیاده‌سازی شده است و هنوز به ساختار modules/ مهاجرت نشده است.
+- ساختار فعلی شامل foundation layer و feature layer است؛ foundation فقط زیرساخت را تقویت کرده و featureهای MVP را حذف نکرده است.
+
+```text
 castaminofen/
 ├── apps/
-│   ├── web/                     # Next.js Frontend
-│   └── api/                     # NestJS Backend
+│   ├── api/
+│   └── web/
 ├── packages/
-│   ├── shared-types/            # DTO/Type های مشترک بین Frontend و Backend
-│   ├── ui/                      # کامپوننت‌های UI مشترک (فاز بعد، اگر لازم شد)
-│   └── config/                  # eslint, tsconfig, prettier مشترک
-├── docs/                        # همین فایل‌های .md پروژه
+│   ├── config/
+│   └── shared-types/
+├── docs/
 ├── docker-compose.yml
-├── .env.example
-├── turbo.json / pnpm-workspace.yaml
-└── README.md
+├── package.json
+└── pnpm-workspace.yaml
 ```
 
 ---
 
-## ساختار Frontend (apps/web) — Feature Based
+## ساختار Frontend فعلی (apps/web)
 
-```
+```text
 apps/web/
 ├── src/
-│   ├── app/                          # Next.js App Router
-│   │   ├── (auth)/
-│   │   │   ├── login/page.tsx
-│   │   │   └── register/page.tsx
-│   │   ├── (main)/
-│   │   │   ├── page.tsx              # Home / Discover
-│   │   │   ├── podcast/[id]/page.tsx
-│   │   │   ├── episode/[id]/page.tsx
-│   │   │   ├── search/page.tsx
-│   │   │   ├── library/page.tsx
-│   │   │   ├── playlist/[id]/page.tsx
-│   │   │   ├── channel/[id]/page.tsx
-│   │   │   └── profile/page.tsx
-│   │   ├── layout.tsx
-│   │   └── globals.css
-│   │
-│   ├── features/                     # Feature Based Architecture
-│   │   ├── auth/
-│   │   │   ├── components/
-│   │   │   ├── hooks/
-│   │   │   ├── api.ts
-│   │   │   └── types.ts
-│   │   ├── podcast/
-│   │   ├── episode/
-│   │   ├── player/
-│   │   │   ├── components/
-│   │   │   │   ├── MiniPlayer.tsx
-│   │   │   │   └── FullPlayer.tsx
-│   │   │   ├── store.ts              # Zustand Player Store
-│   │   │   └── hooks/
-│   │   ├── offline/
-│   │   ├── playlist/
-│   │   ├── library/
-│   │   ├── comments/
-│   │   ├── channel/
-│   │   └── search/
-│   │
-│   ├── shared/                       # Shared UI/Utils بین Featureها
-│   │   ├── components/               # Button, Input, Modal, Skeleton, ...
-│   │   ├── hooks/
-│   │   ├── lib/                      # apiClient, utils
-│   │   └── constants/
-│   │
-│   ├── styles/                       # Design Tokens, Tailwind config helpers
-│   └── service-worker/               # منطق Offline/PWA
-│
-├── public/
-├── next.config.js
-├── tailwind.config.ts
+│   ├── app/                  # Next.js App Router و routeهای فعلی
+│   ├── components/           # Componentهای UI و layout
+│   ├── features/             # Feature-specific implementation
+│   ├── lib/                  # Helpers و API-related utilities
+│   ├── providers/            # Provider composition
+│   ├── shared/               # Shared infrastructure و utilities
+│   ├── stores/               # Zustand stores
+│   ├── styles/               # Design tokens و استایل‌های پایه
+│   └── types/                # تایپ‌های محلی در صورت وجود
+├── package.json
 └── tsconfig.json
 ```
+
+### بخش‌های مهم در apps/web/src/app
+
+- مسیرهای auth: login، register، profile
+- مسیرهای podcast: list، detail، new، edit
+- مسیرهای episode: detail، new
+- مسیرهای پایه‌ی foundation: home، search، library
+
+### بخش‌های مهم در apps/web/src/components
+
+- components UI پایه مثل button، input، card، loading/error/empty state
+- components layout مانند AppShell، Header و BottomNavigation
+
+### بخش‌های مهم در apps/web/src/shared
+
+- shared lib برای API client، env، errors و React Query
+- shared infrastructure برای استفاده‌ی مشترک در featureها
 
 ---
 
-## ساختار Backend (apps/api) — NestJS Feature Modules
+## ساختار Backend فعلی (apps/api)
 
-```
+```text
 apps/api/
 ├── src/
-│   ├── main.ts
-│   ├── app.module.ts
-│   │
-│   ├── modules/
-│   │   ├── auth/
-│   │   │   ├── auth.controller.ts
-│   │   │   ├── auth.service.ts
-│   │   │   ├── auth.module.ts
-│   │   │   ├── dto/
-│   │   │   ├── guards/
-│   │   │   └── strategies/          # JWT Strategy
-│   │   │
-│   │   ├── user/
-│   │   ├── podcast/
-│   │   ├── episode/
-│   │   ├── rss/
-│   │   │   ├── rss.service.ts
-│   │   │   ├── rss.parser.ts
-│   │   │   ├── rss.processor.ts     # BullMQ Job Processor
-│   │   │   └── rss.module.ts
-│   │   ├── search/
-│   │   ├── playlist/
-│   │   ├── library/
-│   │   ├── comments/
-│   │   ├── channel/
-│   │   ├── upload/                  # مدیریت آپلود فایل صوتی به Object Storage
-│   │   └── admin/
-│   │
-│   ├── common/
-│   │   ├── filters/                 # Global Exception Filter
-│   │   ├── interceptors/
-│   │   ├── decorators/
-│   │   ├── guards/
-│   │   └── pipes/
-│   │
-│   ├── config/                      # Env Config, Validation
-│   │
-│   └── database/
-│       ├── prisma.service.ts
-│       └── seed.ts
-│
+│   ├── auth/
+│   ├── episodes/
+│   ├── podcasts/
+│   ├── prisma/
+│   ├── storage/
+│   ├── users/
+│   └── common/
 ├── prisma/
-│   ├── schema.prisma
-│   └── migrations/
-│
-├── test/
-└── tsconfig.json
+└── package.json
 ```
+
+این ساختار در نسخه‌ی فعلی همان ساختار واقعی است و مستندات باید بر اساس همین واقعیت نوشته شوند.
 
 ---
 
 ## قوانین کلی نام‌گذاری و مکان‌یابی
 
-- هر Feature مستقل، تمام فایل‌های مرتبط با خودش (Component, Hook, API call, Type) را در پوشه خودش نگه می‌دارد — نه پخش‌شده در پوشه‌های سراسری.
-- کامپوننت‌های واقعاً مشترک (بیش از یک Feature از آن‌ها استفاده می‌کند) به `shared/components` منتقل می‌شوند.
-- نام فایل کامپوننت‌ها: `PascalCase.tsx`. نام Hookها: `useSomething.ts`. نام Service/Moduleها در Backend: `kebab-case`.
+- هر feature باید فایل‌های مرتبط خود را در پوشه‌ی مربوطه نگه دارد.
+- کامپوننت‌های مشترک در صورت استفاده‌ی گسترده در shared نگهداری می‌شوند.
+- فایل‌های فرانت‌اند باید با سبک‌های موجود در پروژه نام‌گذاری شوند و ساختار جدیدی برای این فاز اضافه نمی‌شود.

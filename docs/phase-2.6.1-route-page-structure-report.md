@@ -68,6 +68,10 @@ Create a lightweight frontend route and page composition foundation for Castamin
 
 - Search, library, profile, and home functionality remain intentionally out of scope for this phase.
 
+## Scope Clarification
+
+این فاز محدود به ساختار route و صفحه‌های پایه‌ی UI بود. featureهای MVP موجود در ریپو، از جمله auth و صفحات podcast/episode، خارج از محدوده‌ی این فاز باقی می‌مانند و همچنان فعال‌اند.
+
 ## Next Recommended Phase
 
 - Await review confirmation before proceeding to the next frontend phase.
