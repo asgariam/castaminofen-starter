@@ -65,8 +65,8 @@
 - این فاز در محدوده‌ی documentation alignment follow-up باقی ماند و هیچ تغییر runtime، route یا API contract ایجاد نکرد.
 
 ## 10. وضعیت فاز 2.7.2
-- فاز 2.7.2 — Podcast Feature Boundary Adoption Plan به‌صورت documentation-only آماده شد.
-- مرز مالکیت feature پادکست بر اساس ساختار فعلی فرانت‌اند، routeها، feature layer و فایل shared API مستند شد.
-- هدف این فاز، روشن‌سازی مسیر مهاجرت تدریجی برای podcast feature بدون تغییر کد اجرایی، رفتار، روت یا API است.
-- هیچ فایل application code، route، API contract یا dependency در این فاز تغییر نکرد.
+- فاز 2.7.2 — Podcast Feature Boundary Adoption به‌صورت implementation-ready اجرا شد.
+- مرز مالکیت feature پادکست با انتقال منطق فرم و validation تخصصی به داخل feature و نگه‌داشتن routeها به‌عنوان entry point تثبیت شد.
+- ساختار feature برای پادکست اکنون شامل component و utilityهای اختصاصی برای فرم و normalization values است.
+- این تغییر بدون تغییر routeها، قرارداد API، dependencyها یا رفتار runtime انجام شد و با build و lint وب تأیید شد.
 
