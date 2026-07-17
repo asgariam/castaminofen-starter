@@ -76,3 +76,9 @@
 - ساختار فعلی اپیزود در فرانت‌اند با الگوی auth و podcast هم‌راستا شده و نقاط مهاجرت آینده شفاف‌تر شده‌اند.
 - این فاز بدون تغییر route، API contract، dependency یا رفتار UI انجام شد.
 
+## 12. وضعیت فاز 2.8.1
+- فاز 2.8.1 — Episode Create Flow Migration با موفقیت اجرا شد.
+- منطق زود و فرم ایجاد اپیزود (schema، state، submit flow و ترکیب UI) به داخل feature episode منتقل شد و route صفحه‌ی new به‌عنوان entry point باقی ماند.
+- لایه‌ی shared API در [apps/web/src/lib/episodes.ts](../apps/web/src/lib/episodes.ts) بدون تغییر باقی ماند و رفتار runtime، URLها و قرارداد API دست‌نخورده باقی ماند.
+- اعتبارسنجی با lint و build وب انجام شد و هیچ خطایی گزارش نشد.
+
