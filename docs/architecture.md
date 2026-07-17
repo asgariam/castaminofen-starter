@@ -1,166 +1,93 @@
 # Architecture — Castaminofen
 
-این فایل، معماری موجود در `architecture.md` پروژه را با جزئیات فنی گسترش می‌دهد.
+این فایل معماری فعلی پروژه را بر اساس واقعیت ریپو توضیح می‌دهد. هدف، هم‌سویی مستندات با لایه‌های موجود در کد است.
 
 ---
 
-## 1. اصول کلی (بدون تغییر نسبت به فایل اصلی)
+## 1. اصول کلی
 
 - Mobile First
 - Feature Based Architecture
 - Clean Code
 - Simple Architecture
 - No Over Engineering
-- API-First (برای پشتیبانی از اپ‌های آینده)
+- API-First برای پشتیبانی از اپ‌های آینده
 
 ---
 
-## 2. معماری کلان سیستم (High-Level)
+## 2. معماری کلان سیستم
 
-```
-┌─────────────────┐        ┌──────────────────┐
-│   Next.js Web    │◄──────►│   NestJS API      │
-│  (Mobile-First)   │  REST  │  (Feature Modules) │
-└─────────────────┘        └────────┬──────────┘
-                                     │
-                 ┌───────────────────┼───────────────────┐
-                 ▼                   ▼                    ▼
-          ┌─────────────┐    ┌─────────────┐      ┌──────────────┐
-          │ PostgreSQL   │    │    Redis     │      │ Object Storage│
-          │ (Main DB)    │    │ (Cache/Queue)│      │ (Audio/Cover) │
-          └─────────────┘    └──────┬───────┘      └──────────────┘
-                                     ▼
-                              ┌─────────────┐
-                              │  BullMQ Worker│
-                              │ (RSS Sync Job)│
-                              └─────────────┘
+```text
+Next.js Web (Mobile-First)  <---->  NestJS API (Feature-Based)
+          |                                     |
+          |                                     |
+          v                                     v
+      PostgreSQL / Redis / Object Storage
 ```
 
 ---
 
-## 3. لایه‌بندی Backend (هر Module در NestJS)
+## 3. لایه‌بندی فعلی در ریپو
 
-هر Feature Module ساختار لایه‌ای زیر را دنبال می‌کند:
+### Foundation Layer
+این لایه زیرساخت‌های مشترک و قابل‌استفاده برای فرانت‌اند را پوشش می‌دهد:
+- UI primitives
+- Design tokens
+- Layout system و AppShell
+- Providers و shared infrastructure
+- ابزارهای React Query، error handling و API client مشترک
 
-```
-Controller  →  Service  →  Repository (Prisma)  →  Database
-     │
-     └── DTO / Validation (class-validator)
-```
+### Feature Layer
+این لایه featureهای MVP فعلی را شامل می‌شود:
+- Auth
+- Podcasts
+- Episodes
+- Future features (player، offline، playlist و غیره)
 
-- **Controller:** فقط مسئول دریافت Request و بازگرداندن Response.
-- **Service:** منطق تجاری (Business Logic).
-- **Repository Layer:** تعامل با Prisma (در قالب یک Service جدا برای جداسازی از منطق تجاری).
-- بدون Repository Pattern پیچیده اضافه — مطابق اصل No Over Engineering از Prisma مستقیم در لایه Data استفاده می‌شود.
-
----
-
-## 4. Module Boundaries (مطابق roadmap.md)
-
-> وضعیت فعلی ریپو در Phase 2.4.4: ماژول‌های بک‌اند در مسیر [apps/api/src](../apps/api/src) به‌صورت مستقیم و feature-based پیاده‌سازی شده‌اند. این ساختار در MVP فعلی پذیرفته شده و هنوز به زیرپوشه‌ی [apps/api/src/modules](../apps/api/src/modules) مهاجرت نشده است. مستندات برای حفظ هم‌سویی با واقعیت جاری، این ساختار را به‌عنوان وضعیت فعلی ثبت می‌کنند.
-
-| Module | مسئولیت |
-|---|---|
-| Auth | Register, Login, Refresh Token, Logout |
-| User | Profile, Settings |
-| Podcast | مدیریت پادکست (RSS-based و UGC) |
-| Episode | مدیریت اپیزود |
-| RSS | Fetch, Parse, Sync, Duplicate Detection |
-| Search | جستجوی پادکست/اپیزود |
-| Player (Frontend-only) | Queue, Playback State |
-| Offline | Download Manager, Offline Library |
-| Playlist | CRUD پلی‌لیست |
-| Library | Favorites, History, Continue Listening |
-| Comments | نظرات روی اپیزود |
-| Channel | کانال‌های کاربران (UGC) |
-| Admin | مدیریت محتوا (فاز بعد) |
-
-هر Module در Backend به‌صورت پوشه مستقل با Controller/Service/DTO/Module خودش پیاده می‌شود (جزئیات در فایل `03-folder-structure.md`).
+> نکته مهم: فازهای foundation 2.5 و 2.6 فقط لایه‌ی زیرساخت و الگوهای مشترک را تقویت کرده‌اند. آن‌ها به‌هیچ‌وجه featureهای MVP فعلی را حذف نکرده‌اند. در واقع، auth، podcast و episode در همین ریپو به‌صورت فعال وجود دارند و با foundation layer هم‌پوشانی دارند.
 
 ---
 
-## 5. جریان RSS Sync (Feature حساس پروژه)
+## 4. Backend Structure
 
-```
-Scheduler (Cron/BullMQ Repeatable Job)
-        │
-        ▼
-Fetch RSS Feed (rss-parser)
-        │
-        ▼
-Parse XML → Normalize Data
-        │
-        ▼
-Duplicate Detection (بر اساس GUID اپیزود / Podcast Feed URL)
-        │
-        ▼
-Insert/Update در PostgreSQL (فقط رکوردهای جدید یا تغییر یافته)
-        │
-        ▼
-Invalidate Cache مرتبط (Redis)
-```
+بک‌اند در مسیر [apps/api/src](../apps/api/src) بر اساس featureها و پوشه‌های مستقیم پیاده‌سازی شده است. ساختار فعلی شامل پوشه‌های اصلی مانند:
+- [apps/api/src/auth](../apps/api/src/auth)
+- [apps/api/src/podcasts](../apps/api/src/podcasts)
+- [apps/api/src/episodes](../apps/api/src/episodes)
+- [apps/api/src/users](../apps/api/src/users)
+- [apps/api/src/storage](../apps/api/src/storage)
 
-نکات:
-- Sync هر فید به‌صورت Job جداگانه در Queue اجرا می‌شود تا یک فید کند/خراب مانع بقیه نشود.
-- خطاها Log و Retry محدود (مثلاً 3 بار) دارند.
+این ساختار برای MVP فعلی پذیرفته شده و در حال حاضر به زیرپوشه‌ی modules مهاجرت نشده است.
 
 ---
 
-## 6. معماری Audio Player (Frontend)
+## 5. Frontend Structure
 
-- **Global Player State** با Zustand: شامل اپیزود جاری، Queue، وضعیت Play/Pause، سرعت پخش، موقعیت فعلی.
-- **Mini Player** به‌صورت Persistent در پایین صفحه (مطابق تجربه Native، شبیه Spotify/Castbox).
-- **Remember Position:** ذخیره Timestamp پخش هر اپیزود (Local + Sync به Backend برای History/Continue Listening).
-- جدا بودن Player State از Data Fetching (TanStack Query) برای جلوگیری از Re-render غیرضروری.
+فرانت‌اند در [apps/web/src](../apps/web/src) بر اساس App Router و ساختار feature-based عمل می‌کند. بخش‌های مهم فعلی:
+- [apps/web/src/app](../apps/web/src/app): routeها و pages
+- [apps/web/src/components](../apps/web/src/components): UI و layout components
+- [apps/web/src/providers](../apps/web/src/providers): provider composition
+- [apps/web/src/shared](../apps/web/src/shared): shared infrastructure و utilities
+- [apps/web/src/features](../apps/web/src/features): feature-specific implementation
 
 ---
 
-## 7. معماری Offline
+## 6. جریان کار اصلی
 
+### Authentication Flow
+```text
+Register/Login -> Access Token + Refresh Token
+Access Token -> Authorization Header
+Refresh Token -> HttpOnly Cookie
 ```
-User Tap "Download"
-        │
-        ▼
-Service Worker fetch فایل صوتی → ذخیره در Cache Storage
-        │
-        ▼
-متادیتای اپیزود ذخیره در IndexedDB (وضعیت: Downloaded)
-        │
-        ▼
-Offline Player از IndexedDB + Cache Storage می‌خواند (بدون نیاز به Network)
+
+### Podcast / Episode Flow
+```text
+Frontend Page -> API Request -> Service / Controller -> Prisma -> Response
 ```
 
 ---
 
-## 8. Authentication Flow
+## 7. مسیر توسعه آینده
 
-```
-Register/Login → Access Token (کوتاه‌مدت, 15m) + Refresh Token (بلندمدت, 7-30d)
-Access Token → در Header هر Request (Authorization: Bearer)
-Refresh Token → HttpOnly Cookie (برای امنیت بیشتر در برابر XSS)
-```
-
----
-
-## 9. Error Handling Strategy
-
-- Backend: Global Exception Filter در NestJS → پاسخ یکنواخت `{ statusCode, message, error }`.
-- Frontend: Error Boundary سراسری + Toast برای خطاهای عملیاتی (مثل Network Error هنگام پخش).
-- تمام خطاهای غیرمنتظره Log می‌شوند (آماده برای اتصال به Sentry در فاز بعد).
-
----
-
-## 10. Security Considerations اولیه
-
-- Rate Limiting روی Auth Endpoints (جلوگیری از Brute Force).
-- Validation کامل ورودی‌ها (DTO + class-validator).
-- محدودیت حجم و نوع فایل در آپلود اپیزود (فقط فرمت‌های صوتی مجاز).
-- Sanitize محتوای Comments (جلوگیری از XSS).
-- CORS محدود به دامنه Frontend.
-
----
-
-## 11. مسیر توسعه آینده بدون Rewrite
-
-- چون API از ابتدا مستقل و نسخه‌بندی‌شده است (`/api/v1`)، اضافه شدن اپ موبایل/Wear OS در آینده نیازی به تغییر Backend ندارد.
-- Feature Modules جدید (AI, Recommendation, Social) به‌صورت Module مستقل به همین ساختار اضافه می‌شوند بدون تأثیر روی ماژول‌های موجود.
+در آینده، featureهای جدید مانند player، offline، playlist و community می‌توانند روی همین لایه‌ی foundation ساخته شوند. این ساختار به‌گونه‌ای طراحی شده که بدون بازنویسی کامل، امکان رشد تدریجی فراهم شود.

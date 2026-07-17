@@ -57,6 +57,10 @@
 - i18n و ترجمه‌ی چندزبانه
 - طراحی نهایی برند و رنگ‌های محصول
 
+## Scope Clarification
+
+این فاز محدود به کارهای foundation بود. featureهای MVP موجود در ریپو، از جمله auth، podcast و episode، همچنان فعال‌اند و خارج از محدوده‌ی این فاز باقی می‌مانند.
+
 ## Next Recommended Phase
 
 Phase 2.5.2 — Design System Foundation

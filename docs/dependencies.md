@@ -1,160 +1,119 @@
 # Dependencies — Castaminofen
 
-لیست پکیج‌های اصلی برای شروع پروژه (Phase 0/1). این لیست حداقلی برای MVP است؛ پکیج‌های فازهای بعدی (AI, Recommendation, Elasticsearch) بعداً اضافه می‌شوند تا از Over Engineering زودهنگام جلوگیری شود.
+این فایل وضعیت پکیج‌های پروژه را به‌صورت هم‌ساز با واقعیت فعلی ریپو جدا می‌کند.
 
 ---
 
-## Frontend (apps/web)
+## Implemented Dependencies
 
-### Core
-```
+این پکیج‌ها در ریپو نصب شده‌اند و در نسخه‌ی فعلی استفاده می‌شوند.
+
+### Frontend (apps/web)
+
+#### Core
+```bash
 next
 react
 react-dom
 typescript
 ```
 
-### Styling
-```
+#### Styling / UI
+```bash
 tailwindcss
 postcss
 autoprefixer
 clsx
 tailwind-merge
+lucide-react
 ```
 
-### State & Data
-```
+#### State / Data / Forms
+```bash
 zustand
 @tanstack/react-query
-axios
-```
-
-### Forms & Validation
-```
 react-hook-form
 zod
 @hookform/resolvers
 ```
 
-### UI/UX
-```
-lucide-react          # آیکون‌ها
-framer-motion         # انیمیشن‌های ظریف UI
+### Backend (apps/api)
+
+#### Core / Framework
+```bash
+@nestjs/common
+@nestjs/config
+@nestjs/core
+@nestjs/jwt
+@nestjs/passport
+@nestjs/platform-express
+@nestjs/mapped-types
 ```
 
-### Offline / PWA
-```
-idb                   # Wrapper راحت‌تر برای IndexedDB
-next-pwa (یا Workbox دستی)
-```
-
-### i18n / RTL
-```
-next-intl             # (در صورت نیاز به چندزبانه بودن در آینده؛ در غیر این صورت پیکربندی RTL ساده کافیست)
+#### Database / Storage
+```bash
+@prisma/client
+prisma
+@aws-sdk/client-s3
+multer
 ```
 
-### Dev Dependencies
+#### Auth / Validation
+```bash
+bcrypt
+class-transformer
+class-validator
+cookie-parser
+passport
+passport-jwt
 ```
-eslint
-eslint-config-next
-prettier
-prettier-plugin-tailwindcss
-@typescript-eslint/parser
-@typescript-eslint/eslint-plugin
-husky
-lint-staged
+
+#### Development tooling
+```bash
+@nestjs/cli
+typescript
+```
+
+### Infrastructure (Root)
+
+```bash
+docker compose
+postgres
+redis
+minio
 ```
 
 ---
 
-## Backend (apps/api)
+## Planned Dependencies
 
-### Core
-```
-@nestjs/core
-@nestjs/common
-@nestjs/platform-express
-typescript
-```
+این پکیج‌ها بخشی از نقشه‌ی راه آینده هستند اما در نسخه‌ی فعلی نصب نشده‌اند.
 
-### Database
-```
-prisma
-@prisma/client
+### Frontend roadmap
+```bash
+next-intl
+next-pwa
+idb
+framer-motion
 ```
 
-### Auth
-```
-@nestjs/jwt
-@nestjs/passport
-passport
-passport-jwt
-bcrypt
-```
-
-### Validation
-```
-class-validator
-class-transformer
-@nestjs/config
-```
-
-### Queue / Cache
-```
+### Background jobs / queue / cache
+```bash
 @nestjs/bullmq
 bullmq
 ioredis
 ```
 
-### RSS
-```
+### RSS / parsing / security
+```bash
 rss-parser
 fast-xml-parser
-```
-
-### File Upload / Storage
-```
-@nestjs/platform-express (Multer داخلی)
-@aws-sdk/client-s3       # سازگار با MinIO و اکثر Object Storageهای S3-Compatible
-```
-
-### Rate Limiting / Security
-```
 @nestjs/throttler
 helmet
 ```
 
-### Dev Dependencies
-```
-@nestjs/cli
-@nestjs/testing
-jest
-ts-jest
-supertest
-eslint
-prettier
-```
-
 ---
 
-## Infrastructure (Root)
+## Note on Dependency Changes
 
-```
-docker-compose.yml شامل:
-  - postgres:16
-  - redis:7
-  - minio (فقط برای Development)
-```
-
----
-
-## نکته درباره اضافه‌کردن پکیج جدید
-
-طبق اصل No Over Engineering، هر پکیج جدید باید:
-
-1. نیاز واقعی و فعلی MVP را حل کند (نه نیاز احتمالی آینده).
-2. جایگزین ساده‌تری با کد داخلی نداشته باشد.
-3. نگه‌داری‌شده و دارای مستندات کافی باشد.
-
-پکیج‌هایی مثل **Meilisearch client**، **OpenAI SDK**، **Socket.io** (برای Live Audio/Notification) عمداً از این لیست حذف شده‌اند چون متعلق به فازهای Backlog هستند، نه MVP.
+طبق اصل No Over Engineering، هر پکیج جدید باید فقط در صورت نیاز واقعی MVP یا فاز بعدی اضافه شود. پکیج‌هایی مثل AI SDK، Elasticsearch client، Socket.io و ابزارهای live experience در این نسخه جزو roadmap آینده‌اند و در حال حاضر نصب نشده‌اند.
