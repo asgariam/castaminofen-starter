@@ -40,3 +40,9 @@ export async function updatePodcast(id: string, payload: Partial<CreatePodcastIn
     body: payload,
   });
 }
+
+export async function deletePodcast(id: string): Promise<{ ok: boolean }> {
+  return apiFetch<{ ok: boolean }>(`podcasts/${id}`, {
+    method: 'DELETE',
+  });
+}

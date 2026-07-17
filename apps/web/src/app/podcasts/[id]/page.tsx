@@ -1,22 +1,39 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
-import { useParams } from 'next/navigation';
-import { getPodcastById } from '@/lib/podcasts';
+import { useParams, useRouter } from 'next/navigation';
+import { useMemo } from 'react';
+import { useAuthStore } from '@/stores/authStore';
+import { useDeletePodcast, usePodcast } from '@/features/podcasts/hooks/usePodcasts';
 import { LoadingState } from '@/components/ui/loading-state';
 import { ErrorState } from '@/components/ui/error-state';
-import { Card } from '@/components/ui/card';
-import Link from 'next/link';
-import type { Episode } from '@/lib/types';
+import { PodcastDetails } from '@/features/podcasts/PodcastDetails';
 
 export default function PodcastDetailsPage() {
   const params = useParams();
+  const router = useRouter();
   const podcastId = params?.id as string;
-  const query = useQuery({
-    queryKey: ['podcast', podcastId],
-    queryFn: () => getPodcastById(podcastId),
-    enabled: Boolean(podcastId),
-  });
+  const query = usePodcast(podcastId);
+  const deleteMutation = useDeletePodcast();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const canManage = useMemo(() => isAuthenticated, [isAuthenticated]);
+
+  async function handleDelete() {
+    if (!podcastId) {
+      return;
+    }
+
+    const confirmed = window.confirm('Delete this podcast?');
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      await deleteMutation.mutateAsync({ id: podcastId });
+      router.push('/podcasts');
+    } catch {
+      // Error is surfaced by the mutation state below.
+    }
+  }
 
   if (query.isLoading) {
     return <LoadingState message="Loading podcast details..." />;
@@ -28,47 +45,8 @@ export default function PodcastDetailsPage() {
 
   return (
     <main className="page-container">
-      <section className="card">
-        <div className="header">
-          <div>
-            <h1>{query.data.title}</h1>
-            <p>{query.data.description || 'No description available.'}</p>
-          </div>
-          <div className="toolbar">
-            <Link href={`/podcasts/${podcastId}/edit`} className="button button-secondary">
-              Edit
-            </Link>
-          </div>
-        </div>
-        <div className="field-row">
-          <Card>
-            <p>
-              <strong>RSS URL:</strong> {query.data.rssUrl}
-            </p>
-            <p>
-              <strong>Website:</strong> {query.data.website || '—'}
-            </p>
-          </Card>
-          <Card>
-            <h2>Episodes</h2>
-            {query.data.episodes?.length ? (
-              <div className="field-row">
-                {query.data.episodes.map((episode: Episode) => (
-                  <Card key={episode.id} className="card">
-                    <h3>{episode.title}</h3>
-                    <p>{episode.description || 'No description'}</p>
-                    <Link href={`/episodes/${episode.id}`} className="button button-secondary">
-                      View Episode
-                    </Link>
-                  </Card>
-                ))}
-              </div>
-            ) : (
-              <p>No episodes found.</p>
-            )}
-          </Card>
-        </div>
-      </section>
+      {deleteMutation.isError ? <div className="error-state">{deleteMutation.error?.message ?? 'Unable to delete podcast.'}</div> : null}
+      <PodcastDetails podcast={query.data} canManage={canManage} isDeleting={deleteMutation.isPending} onDelete={handleDelete} />
     </main>
   );
 }
