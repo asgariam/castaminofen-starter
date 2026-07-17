@@ -23,6 +23,7 @@
 - Phase 2.5.2 — Design System Foundation: پایه‌ی سیستم طراحی با tokens متمرکز، استایل‌های مشترک RTL، و کامپوننت‌های بازاستفاده‌پذیر UI برای دکمه، ورودی، کارت، badge، avatar، loading/error و empty state پیاده‌سازی شد.
 - Phase 2.5.3 — Application Shell Foundation: اسکلت برنامه‌ی موبایل‌محور با AppShell، Header، MobileContainer و BottomNavigation ایجاد شد.
 - Phase 2.5.4 — Frontend Infrastructure Foundation: لایه‌ی API مشترک، پیکربندی محیطی عمومی، تنظیمات React Query قابل‌استفاده مجدد و ابزارهای مدیریت خطا برای frontend اضافه شد.
+- Phase 2.6.1 — Route & Page Structure Foundation: مسیرهای ساختاری خانه، جستجو، کتابخانه و پروفایل اضافه شدند و ناوبری AppShell به مسیرهای واقعی مرتبط شد.
 
 **۳. فاز فعال فعلی**
 - وضعیت: Phase 2.4.4 تکمیل شد.

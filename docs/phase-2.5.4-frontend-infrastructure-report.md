@@ -18,9 +18,9 @@ Implement the frontend infrastructure foundation for future feature development 
 
 ## API Client Foundation
 
-- Added a reusable API client abstraction with request URL building, JSON parsing, and structured error handling.
+- Added a generic API client abstraction for future frontend infrastructure use, including request URL building, JSON parsing, and structured error handling.
 - Kept the client environment-aware via a centralized public env helper.
-- Preserved the existing request contract expected by the current auth, podcast, and episode features.
+- Kept the layer intentionally generic and not tied to any specific business endpoint group.
 
 ## Environment Configuration
 
@@ -70,6 +70,10 @@ Implement the frontend infrastructure foundation for future feature development 
 
 ## Scope Compliance Audit
 
+- Infrastructure only.
+- No business endpoints.
+- No feature hooks.
+- No product data fetching.
 - No product features were added.
 - No pages were created.
 - No business APIs were connected.
@@ -86,4 +90,4 @@ Implement the frontend infrastructure foundation for future feature development 
 
 ## Next Recommended Phase
 
-Phase 2.5.5 — Shared empty/error/loading and modal patterns.
+Pending project roadmap approval.
