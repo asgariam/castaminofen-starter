@@ -50,6 +50,8 @@
   1. آغاز توسعه backend و frontend مربوط به Podcast/Episode.
   2. اضافه کردن CI (GitHub Actions یا مشابه) برای اجرای `pnpm -r lint` و build بر روی PRها.
   3. مستندسازی دستورالعمل‌های توسعه‌دهنده.
+- برنامه‌ریزی فاز 2.4 (Frontend Foundation) با سند `docs/phase-2.4-frontend-foundation-plan.md` تکمیل شد.
 
 ---
-فایل گزارش در مسیر `docs/project-status.md` ذخیره شد. برای هرگونه اصلاحات، اضافه‌کردن جزئیات بیشتر یا ایجاد نسخه انگلیسیِ گزارش آماده‌ام.
+فایل گزارش در مسیر `docs/project-status.md` ذخیره شد. ادعای آماده‌سازی فاز 2.4 در `docs/phase-2.4-frontend-foundation-plan.md` ثبت شده است.
+

@@ -2263,6 +2263,77 @@ before stopping.
 
 # 90. Script Documentation Rules
 
+Whenever a new script, command, automation task, migration script, seed script, deployment script, or helper script is created:
+
+Update:
+
+docs/development/scripts.md
+
+
+Each script entry must contain:
+
+- Script Name
+- Location
+- Purpose
+- Usage Command
+- Parameters
+- Environment Requirements
+- Created Date
+- Related Phase
+
+
+Example:
+
+## prisma:migrate
+
+Location:
+
+apps/api/package.json
+
+
+Purpose:
+
+Run Prisma database migrations.
+
+
+Usage:
+
+pnpm prisma migrate deploy
+
+
+Related Phase:
+
+Phase 1 Auth
+
+
+---
+
+# Changelog Rules
+
+After every code change:
+
+Update:
+
+docs/development/changelog.md
+
+
+The changelog entry must include:
+
+- Date
+- Phase
+- Summary
+- Changed Files
+- Technical Notes
+
+
+No phase is considered completed until:
+
+- Code changes are done
+- Build passes
+- Lint passes
+- Documentation is updated
+- Changelog is updated  
+
 Every script created in this project MUST be documented.
 
 A script is any executable command defined in:
@@ -2378,6 +2449,119 @@ Each entry must include:
 - Important technical decisions
 
 # Documentation & Reporting Rules
+
+## Phase Implementation Reports
+
+After completing any development phase or sub-phase:
+
+1. Create a dedicated markdown report file.
+
+Location:
+
+docs/phases/
+
+Naming convention:
+
+phase-{number}-{title}-report.md
+
+
+Example:
+
+docs/phases/phase-2.3-episode-storage-report.md
+
+
+The report must include:
+
+- Objective
+- Scope
+- Completed Work
+- Files Changed
+- Database Changes
+- API Changes
+- Frontend Changes (if applicable)
+- Commands Executed
+- Validation Results
+- Known Limitations
+- Next Recommended Step
+
+
+Never provide only a chat summary.
+The report file must be created or updated inside the repository.
+
+---
+
+# Script Documentation Rules
+
+Whenever a new script, command, automation task, migration script, seed script, deployment script, or helper script is created:
+
+Update:
+
+docs/development/scripts.md
+
+
+Each script entry must contain:
+
+- Script Name
+- Location
+- Purpose
+- Usage Command
+- Parameters
+- Environment Requirements
+- Created Date
+- Related Phase
+
+
+Example:
+
+## prisma:migrate
+
+Location:
+
+apps/api/package.json
+
+
+Purpose:
+
+Run Prisma database migrations.
+
+
+Usage:
+
+pnpm prisma migrate deploy
+
+
+Related Phase:
+
+Phase 1 Auth
+
+
+---
+
+# Changelog Rules
+
+After every code change:
+
+Update:
+
+docs/development/changelog.md
+
+
+The changelog entry must include:
+
+- Date
+- Phase
+- Summary
+- Changed Files
+- Technical Notes
+
+
+No phase is considered completed until:
+
+- Code changes are done
+- Build passes
+- Lint passes
+- Documentation is updated
+- Changelog is updated
 
 ## Mandatory Phase Documentation
 
@@ -2546,3 +2730,22 @@ Copilot MUST provide:
 - Validation results
 - Documentation updated
 
+
+# Final Response Rules
+
+When completing a task:
+
+The final response must be in Persian.
+
+The response must contain:
+
+1. خلاصه تغییرات
+2. فایل‌های تغییر یافته
+3. دستورات اجرا شده
+4. وضعیت تست/build/lint
+5. فایل documentation created/updated
+6. Next step recommendation
+
+
+Do not output long technical reports only in chat.
+Store detailed reports inside docs/ first.
