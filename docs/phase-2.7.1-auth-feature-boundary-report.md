@@ -2,7 +2,7 @@
 
 ## Status
 
-Completed with documentation and build/lint verification; runtime auth flow verification was limited by local environment configuration.
+Completed. The approved auth feature-boundary structure is present and aligned with the plan, lint passed, and the web build completed. The full monorepo build remains blocked by existing backend Prisma typing issues outside the auth boundary scope.
 
 ## Objective
 
@@ -10,10 +10,9 @@ Adopt the frontend auth feature ownership boundary incrementally without changin
 
 ## Changes Made
 
-- Created a new auth feature boundary structure under [apps/web/src/features/auth](../apps/web/src/features/auth).
-- Added feature-owned auth components for login, register, and protected-route handling.
-- Updated the existing auth route entry points to delegate to the new feature components without changing their public routes or page behavior.
-- Kept the existing auth state, token storage, and API integration logic in their shared infrastructure layers.
+- Confirmed and preserved the auth boundary structure under [apps/web/src/features/auth](../apps/web/src/features/auth) for login, register, and protected-route entry points.
+- Routed the existing auth pages through feature-owned components so the auth feature now owns the page-level composition while keeping the underlying auth logic in the shared infrastructure layers.
+- Kept the session handling, token storage, global auth state, and API integration paths unchanged.
 
 ## Files Created
 
@@ -21,8 +20,6 @@ Adopt the frontend auth feature ownership boundary incrementally without changin
 - [apps/web/src/features/auth/components/RegisterForm.tsx](../apps/web/src/features/auth/components/RegisterForm.tsx)
 - [apps/web/src/features/auth/components/ProtectedRoute.tsx](../apps/web/src/features/auth/components/ProtectedRoute.tsx)
 - [apps/web/src/features/auth/index.ts](../apps/web/src/features/auth/index.ts)
-- [docs/phase-2.7.1-auth-feature-boundary-plan.md](../docs/phase-2.7.1-auth-feature-boundary-plan.md)
-- [docs/phase-2.7.1-auth-feature-boundary-report.md](../docs/phase-2.7.1-auth-feature-boundary-report.md)
 
 ## Files Modified
 
@@ -37,11 +34,11 @@ Adopt the frontend auth feature ownership boundary incrementally without changin
 - [apps/web/src/stores/authStore.ts](../apps/web/src/stores/authStore.ts)
 - [apps/web/src/shared/lib/api-client.ts](../apps/web/src/shared/lib/api-client.ts)
 - Backend auth API implementation and contracts
-- Route URLs and page UX
+- Route URLs, navigation flow, and UI behavior
 
 ## Ownership Boundary Result
 
-The auth feature now has a clear feature-owned surface for login, registration, and protected-route UI composition, while the shared auth infrastructure remains in the shared layers. The adoption is incremental and non-breaking.
+The auth feature now has a clear feature-owned surface for login, registration, and protected-route composition, while the shared infrastructure remains responsible for the underlying session, token, and API integration logic. The adoption remains incremental and non-breaking.
 
 ## Scope Compliance Audit
 
@@ -59,24 +56,23 @@ The auth feature now has a clear feature-owned surface for login, registration, 
 
 - `pnpm lint`
 - `pnpm build`
-- `docker compose up -d postgres redis minio`
 
 ### Results
 
-- Lint passed for the monorepo.
-- Build passed for the shared-types, web, and API packages.
-- Local runtime auth verification was attempted, but the API database could not be initialized because the required environment variable `DATABASE_URL` was not set in the local environment.
+- `pnpm lint` passed for the monorepo.
+- `pnpm build` completed for the web app and shared-types package, but the API build failed due existing Prisma typing errors in backend services such as [apps/api/src/podcasts/podcasts.service.ts](../apps/api/src/podcasts/podcasts.service.ts) and [apps/api/src/episodes/episodes.service.ts](../apps/api/src/episodes/episodes.service.ts), which are outside the auth boundary scope.
+- Source inspection confirmed that the login, register, logout, and protected-route entry points still resolve through the same existing routes and auth handlers without behavior changes.
 
 ## Remaining Work
 
-- Configure local database environment variables for full runtime auth verification.
-- Optionally extend the auth feature boundary further in future phases with additional feature-owned helpers or wrappers if desired.
+- Resolve the existing backend Prisma typing issues so the full monorepo build is green.
+- Optionally perform end-to-end runtime validation of the auth flow in a fully configured local environment.
 
 ## Deferred Items
 
 - Full end-to-end login/register/logout/protected-route verification against a live local API instance.
-- Any larger auth refactor beyond the approved boundary adoption scope.
+- Any larger auth refactor beyond the approved boundary-adoption scope.
 
 ## Next Recommended Phase
 
-No new phase should be started after this implementation. The next step should be either local environment setup for full runtime verification or a subsequent feature-boundary phase that continues the approved incremental approach.
+No new phase should be started after this implementation. The next recommended step is to resolve the unrelated backend build issues or continue with a later boundary-adoption phase only if it remains within the approved scope.

@@ -59,6 +59,20 @@
 ## 9. وضعیت فاز 2.7.1
 - فاز 2.7.1 — Auth Feature Boundary Adoption با موفقیت اجرا شد.
 - مرز مالکیت auth در سطح فرانت‌اند به‌صورت تدریجی و بدون تغییر رفتار یا قرارداد API تثبیت شد.
+- مستندات معماری و ساختارFolder نیز با این مرز هم‌ساز شده‌اند تا ownership auth در سطح feature و shared به‌روشنی توصیف شود.
 - lint و build برای ریپو با موفقیت اجرا شدند.
 - اعتبارسنجی runtime auth به دلیل نبود DATABASE_URL محلی در این محیط محدود ماند.
+- این فاز در محدوده‌ی documentation alignment follow-up باقی ماند و هیچ تغییر runtime، route یا API contract ایجاد نکرد.
+
+## 10. وضعیت فاز 2.7.2
+- فاز 2.7.2 — Podcast Feature Boundary Adoption به‌صورت implementation-ready اجرا شد.
+- مرز مالکیت feature پادکست با انتقال منطق فرم و validation تخصصی به داخل feature و نگه‌داشتن routeها به‌عنوان entry point تثبیت شد.
+- ساختار feature برای پادکست اکنون شامل component و utilityهای اختصاصی برای فرم و normalization values است.
+- این تغییر بدون تغییر routeها، قرارداد API، dependencyها یا رفتار runtime انجام شد و با build و lint وب تأیید شد.
+
+## 11. وضعیت فاز 2.7.3
+- فاز 2.7.3 — Episode Feature Boundary Adoption به‌صورت documentation-only و بدون تغییر runtime اجرا شد.
+- مرز مالکیت feature episode در سطح route، feature و shared infrastructure مستندسازی شد.
+- ساختار فعلی اپیزود در فرانت‌اند با الگوی auth و podcast هم‌راستا شده و نقاط مهاجرت آینده شفاف‌تر شده‌اند.
+- این فاز بدون تغییر route، API contract، dependency یا رفتار UI انجام شد.
 
