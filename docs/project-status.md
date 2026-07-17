@@ -70,3 +70,9 @@
 - ساختار feature برای پادکست اکنون شامل component و utilityهای اختصاصی برای فرم و normalization values است.
 - این تغییر بدون تغییر routeها، قرارداد API، dependencyها یا رفتار runtime انجام شد و با build و lint وب تأیید شد.
 
+## 11. وضعیت فاز 2.7.3
+- فاز 2.7.3 — Episode Feature Boundary Adoption به‌صورت documentation-only و بدون تغییر runtime اجرا شد.
+- مرز مالکیت feature episode در سطح route، feature و shared infrastructure مستندسازی شد.
+- ساختار فعلی اپیزود در فرانت‌اند با الگوی auth و podcast هم‌راستا شده و نقاط مهاجرت آینده شفاف‌تر شده‌اند.
+- این فاز بدون تغییر route، API contract، dependency یا رفتار UI انجام شد.
+
