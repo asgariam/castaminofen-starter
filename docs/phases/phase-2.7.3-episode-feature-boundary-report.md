@@ -22,7 +22,7 @@
 ## Files Added
 
 - [docs/phase-2.7.3-episode-feature-boundary-plan.md](../phase-2.7.3-episode-feature-boundary-plan.md)
-- [docs/phases/phase-2.7.3-episode-feature-boundary-report.md](phase-2.7.3-episode-feature-boundary-report.md)
+- [docs/phases/phase-2.7.3-episode-feature-boundary-report.md](../phases/phase-2.7.3-episode-feature-boundary-report.md)
 
 ## Current Ownership State
 
@@ -44,7 +44,34 @@ Episode currently has a mixed ownership model:
 
 - Data access in [apps/web/src/lib/episodes.ts](../../apps/web/src/lib/episodes.ts)
 - Shared UI primitives, layout, providers, and global state
-- Global infrastructure such as the future player ownership boundary
+- Global infrastructure including future Player feature ownership
+
+## Ownership Boundary Summary
+
+### Episode Feature Owns
+
+- Episode-specific UI
+- Feature-local hooks
+- Episode-specific validation
+- Episode-specific formatting
+- Local interaction state
+- Episode-specific types that are not shared contracts
+
+### Shared Layer Owns
+
+- API client abstraction
+- Network transport concerns
+- UI primitives
+- Layout and shell
+- Providers
+- Global state
+- Future Player feature infrastructure
+
+### Player Boundary
+
+- Player remains an independent feature.
+- Episode does not own playback engine.
+- Queue management and global playback state remain outside Episode ownership.
 
 ## Naming Note
 
@@ -105,6 +132,17 @@ This documentation-only phase aligns Episode with the existing feature-boundary 
 - No API contract changes
 - No dependency changes
 - No UI changes
+
+## Validation Summary
+
+- Documentation only
+- No TypeScript changes
+- No import changes
+- No route changes
+- No API contract changes
+- No dependency changes
+- No UI changes
+- No runtime behavior changes
 
 ## Notes
 

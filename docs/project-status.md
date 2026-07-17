@@ -76,3 +76,29 @@
 - ساختار فعلی اپیزود در فرانت‌اند با الگوی auth و podcast هم‌راستا شده و نقاط مهاجرت آینده شفاف‌تر شده‌اند.
 - این فاز بدون تغییر route، API contract، dependency یا رفتار UI انجام شد.
 
+## 12. وضعیت فاز 2.8.1
+- فاز 2.8.1 — Episode Create Flow Migration با موفقیت اجرا شد.
+- منطق زود و فرم ایجاد اپیزود (schema، state، submit flow و ترکیب UI) به داخل feature episode منتقل شد و route صفحه‌ی new به‌عنوان entry point باقی ماند.
+- لایه‌ی shared API در [apps/web/src/lib/episodes.ts](../apps/web/src/lib/episodes.ts) بدون تغییر باقی ماند و رفتار runtime، URLها و قرارداد API دست‌نخورده باقی ماند.
+- اعتبارسنجی با lint و build وب انجام شد و هیچ خطایی گزارش نشد.
+
+## 13. وضعیت فاز 2.8.2.1
+- فاز 2.8.2.1 — Episode Detail Presentation Migration با موفقیت اجرا شد.
+- JSX صفحه‌ی جزئیات اپیزود به کامپوننت‌های feature-owned در [apps/web/src/features/episodes/components/EpisodeDetailView.tsx](../apps/web/src/features/episodes/components/EpisodeDetailView.tsx) و [apps/web/src/features/episodes/components/EpisodeAudioUploadCard.tsx](../apps/web/src/features/episodes/components/EpisodeAudioUploadCard.tsx) منتقل شد.
+- route [apps/web/src/app/episodes/[id]/page.tsx](../apps/web/src/app/episodes/[id]/page.tsx) همچنان مالکیت params، React Query، mutation و state انتخاب فایل را حفظ کرد.
+- هیچ تغییر در route، URL، API contract، query keys، mutationها یا رفتار runtime مورد انتظار ایجاد نشد.
+- اعتبارسنجی با lint و build وب انجام شد و هر دو با موفقیت گذشتند.
+
+## 14. وضعیت فاز 2.8.2.2
+- فاز 2.8.2.2 — Episode Detail Logic Extraction با موفقیت اجرا شد.
+- منطق کوئری جزئیات اپیزود و جریان آپلود audio به هوک‌های feature-local در [apps/web/src/features/episodes/hooks/useEpisodeDetail.ts](../apps/web/src/features/episodes/hooks/useEpisodeDetail.ts) و [apps/web/src/features/episodes/hooks/useEpisodeAudioUpload.ts](../apps/web/src/features/episodes/hooks/useEpisodeAudioUpload.ts) منتقل شد.
+- route [apps/web/src/app/episodes/[id]/page.tsx](../apps/web/src/app/episodes/[id]/page.tsx) اکنون فقط مسئول composition، params و ارائه‌ی صفحه است و ownership feature را برای orchestration و state محلی حفظ می‌کند.
+- URLها، query keys، API contracts و رفتار UI بدون تغییر باقی ماندند.
+- اعتبارسنجی با lint و build وب انجام شد و هر دو با موفقیت گذشتند.
+
+## 15. وضعیت فاز 2.9
+- فاز 2.9 — Player Feature Boundary Adoption Plan به‌صورت documentation-only و بدون تغییر runtime اجرا شد.
+- مرز مالکیت آینده برای Player در سطح frontend تحلیل و مستندسازی شد و در [docs/phases/phase-2.9-player-feature-boundary-plan.md](./phases/phase-2.9-player-feature-boundary-plan.md) ثبت گردید.
+- وابستگی‌های فعلی بین Episode و playback infrastructure شناسایی شد و پیش‌نویس ownership boundary برای Player، Episode، shared layer و API/data boundary ترسیم شد.
+- این فاز بدون تغییر route، API contract، dependency یا رفتار runtime انجام شد.
+

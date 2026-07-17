@@ -137,7 +137,7 @@ The feature owns business-facing UI behavior, not network infrastructure.
 - composition صفحات episode
 - hookهای episode-specific
 - validationهای تخصصی episode
-- typeهای محلی episode
+- Episode-specific types that are not shared contracts
 - منطق formatting episode
 - stateهای تعاملی محلی
 
@@ -152,7 +152,7 @@ The feature owns business-facing UI behavior, not network infrastructure.
 - layout و shell
 - providers
 - global stores
-- player infrastructure عمومی در آینده
+- مرز مالکیت feature Player و زیرساخت‌های playback مشترک در آینده
 
 ---
 
