@@ -37,11 +37,11 @@ export class AuthService {
   async getTokens(userId: string, email: string) {
     const payload = { sub: userId, email };
     const accessToken = await this.jwtService.signAsync(payload, {
-      secret: this.config.get<string>('JWT_SECRET'),
+      secret: this.config.get<string>('JWT_SECRET', 'development-jwt-secret'),
       expiresIn: this.config.get<string | number>('ACCESS_TOKEN_TTL') ?? '15m',
     });
     const refreshToken = await this.jwtService.signAsync(payload, {
-      secret: this.config.get<string>('JWT_REFRESH_SECRET'),
+      secret: this.config.get<string>('JWT_REFRESH_SECRET', 'development-refresh-secret'),
       expiresIn: this.config.get<string | number>('REFRESH_TOKEN_TTL') ?? '7d',
     });
     return { accessToken, refreshToken };
@@ -62,7 +62,7 @@ export class AuthService {
     let payload: any;
     try {
       payload = await this.jwtService.verifyAsync(refreshToken, {
-        secret: this.config.get<string>('JWT_REFRESH_SECRET'),
+        secret: this.config.get<string>('JWT_REFRESH_SECRET', 'development-refresh-secret'),
       });
     } catch (e) {
       void e;

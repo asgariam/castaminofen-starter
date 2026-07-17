@@ -4,5 +4,8 @@ dist
 coverage
 tsconfig.tsbuildinfo
 
-#.env
-#.env.local
+# Environment files
+.env
+.env.*
+!.env.example
+!apps/api/.env.example

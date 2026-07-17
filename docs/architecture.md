@@ -57,6 +57,8 @@ Controller  →  Service  →  Repository (Prisma)  →  Database
 
 ## 4. Module Boundaries (مطابق roadmap.md)
 
+> وضعیت فعلی ریپو در Phase 2.4.4: ماژول‌های بک‌اند در مسیر [apps/api/src](../apps/api/src) به‌صورت مستقیم و feature-based پیاده‌سازی شده‌اند. این ساختار در MVP فعلی پذیرفته شده و هنوز به زیرپوشه‌ی [apps/api/src/modules](../apps/api/src/modules) مهاجرت نشده است. مستندات برای حفظ هم‌سویی با واقعیت جاری، این ساختار را به‌عنوان وضعیت فعلی ثبت می‌کنند.
+
 | Module | مسئولیت |
 |---|---|
 | Auth | Register, Login, Refresh Token, Logout |

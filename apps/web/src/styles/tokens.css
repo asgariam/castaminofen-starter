@@ -1,0 +1,58 @@
+:root {
+  color-scheme: dark;
+  --bg-primary: #0e0e10;
+  --bg-secondary: #1a1a1d;
+  --bg-tertiary: #232327;
+  --text-primary: #ffffff;
+  --text-secondary: #a0a0a6;
+  --text-muted: #70707a;
+  --accent: #8b5cf6;
+  --accent-foreground: #f8fafc;
+  --border: #2a2a2e;
+  --border-strong: #3d3d45;
+  --success: #22c55e;
+  --error: #ef4444;
+  --warning: #f59e0b;
+  --surface-elevated: rgba(255, 255, 255, 0.05);
+  --surface-overlay: rgba(255, 255, 255, 0.08);
+  --shadow-color: rgba(0, 0, 0, 0.24);
+  --shadow-sm: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --shadow-md: 0 16px 40px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.28);
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.25rem;
+  --radius-full: 9999px;
+  --font-body: var(--font-vazirmatn, 'Vazirmatn', 'Inter', system-ui, sans-serif);
+  --font-heading: var(--font-vazirmatn, 'Vazirmatn', 'Inter', system-ui, sans-serif);
+  --font-mono: 'SFMono-Regular', ui-monospace, monospace;
+  --container-max: 72rem;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+}
+
+[data-theme='light'] {
+  color-scheme: light;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f5f7;
+  --bg-tertiary: #f0f0f4;
+  --text-primary: #111111;
+  --text-secondary: #666666;
+  --text-muted: #8b8b95;
+  --border: #e5e5e7;
+  --border-strong: #d0d0d7;
+  --surface-elevated: rgba(17, 17, 17, 0.04);
+  --surface-overlay: rgba(17, 17, 17, 0.06);
+  --shadow-color: rgba(17, 17, 17, 0.08);
+  --shadow-sm: 0 8px 24px rgba(17, 17, 17, 0.08);
+  --shadow-md: 0 16px 40px rgba(17, 17, 17, 0.12);
+  --shadow-lg: 0 24px 60px rgba(17, 17, 17, 0.16);
+}

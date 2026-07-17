@@ -2,6 +2,12 @@
 
 پیشنهاد: پروژه به‌صورت **Monorepo** (با pnpm workspaces یا Turborepo) نگه‌داری شود تا Frontend و Backend در یک Repo باشند و به‌راحتی Type/Config مشترک Share شود. (در صورت ترجیح به دو Repo مجزا هم قابل تقسیم است — تصمیم نهایی در Phase 0.)
 
+## وضعیت فعلی ریپو (Phase 2.4.4)
+
+- در نسخه‌ی فعلی، ماژول‌های بک‌اند مستقیم در مسیر [apps/api/src](../apps/api/src) قرار دارند؛ برای مثال [apps/api/src/auth](../apps/api/src/auth)، [apps/api/src/podcasts](../apps/api/src/podcasts) و [apps/api/src/episodes](../apps/api/src/episodes). این ساختار برای MVP فعلی پذیرفته شده و در حال حاضر به‌صورت رسمی به `src/modules` مهاجرت نشده است.
+- ویژگی‌هایی مانند RSS Sync، BullMQ/Queue، Offline/PWA و Player کامل هنوز در این نسخه به‌صورت کامل پیاده‌سازی نشده‌اند و به‌عنوان کارهای آینده/غیر-MVP در این مستندات ثبت می‌شوند.
+- ساختار فعلی برای MVP کافی است و در این فاز فقط تنظیم و هم‌سوسازی با واقعیت جاری انجام شده است.
+
 ```
 castaminofen/
 ├── apps/

@@ -9,6 +9,11 @@ Castaminofen is a mobile-first podcast platform. This repository now contains th
 3. Run the web app with `pnpm dev:web`.
 4. Run the API with `pnpm dev:api`.
 
+## if you have problem with Build 
+pnpm install
+pnpm --filter @castaminofen/api prisma generate
+pnpm build
+
 ## Structure
 
 - apps/web: Next.js frontend scaffold

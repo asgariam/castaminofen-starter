@@ -1,3 +1,4 @@
+import path from 'path';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from './prisma/prisma.module';
@@ -11,7 +12,7 @@ import { StorageModule } from './storage/storage.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env', '.env.local'],
+      envFilePath: [path.resolve(__dirname, '../../../.env'), path.resolve(__dirname, '../../../.env.local'), '.env', '.env.local'],
     }),
     PrismaModule,
     UsersModule,
