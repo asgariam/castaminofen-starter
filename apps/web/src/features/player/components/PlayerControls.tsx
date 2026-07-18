@@ -9,8 +9,8 @@ export function PlayerControls() {
   const playerRuntime = usePlayerRuntime();
   const { currentItem, status, isPlaying, queue, currentIndex } = usePlayerState();
 
-  const canGoPrevious = queue.length > 1 && currentIndex > 0;
-  const canGoNext = queue.length > 1 && currentIndex < queue.length - 1;
+  const canGoPrevious = currentIndex > 0;
+  const canGoNext = currentIndex >= 0 && currentIndex < queue.length - 1;
 
   const handleTogglePlayback = async () => {
     if (!currentItem?.audioUrl) {

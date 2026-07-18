@@ -1,6 +1,6 @@
 # گزارش تحویل پروژه — Castaminofen
 
-تاریخ: 2026-07-17
+تاریخ: 2026-07-18
 
 ## 1. وضعیت کنونی پروژه
 - مخزن مونو-ریپو با دو اپلیکیشن اصلی در [apps/api](../apps/api) و [apps/web](../apps/web) و بسته‌های مشترک در [packages](../packages) در حال نگهداری است.
@@ -167,3 +167,9 @@
 - queue مالکیتی Player در [apps/web/src/features/player/store/playerStore.ts](../apps/web/src/features/player/store/playerStore.ts) اضافه شد و actions replaceQueue، clearQueue، goToNext و goToPrevious ارائه شدند.
 - runtime Player در [apps/web/src/features/player/runtime/playerRuntime.ts](../apps/web/src/features/player/runtime/playerRuntime.ts) با load/move بین آیتم‌ها یکپارچه شد و کنترل‌های Next/Previous در [apps/web/src/features/player/components/PlayerControls.tsx](../apps/web/src/features/player/components/PlayerControls.tsx) فعال شدند.
 - این تغییر بدون تغییر route، API contract یا ownership Episode انجام شد و با lint/build وب تأیید شد.
+
+## 18. وضعیت فاز 3.1
+- فاز 3.1 — Queue Auto-Advance & Playback Continuity با موفقیت اجرا شد.
+- Runtime Player حالا پایان پخش هر آیتم را تشخیص می‌دهد و به‌صورت خودکار به آیتم بعدی Queue می‌رود؛ در انتهای Queue نیز پخش به‌صورت graceful متوقف می‌شود.
+- مرز مالکیت Episode بدون تغییر باقی ماند و Audio Engine فقط رویدادهای پخش را گزارش می‌کند.
+- کنترل‌های Previous/Next اکنون با وضعیت Queue هماهنگ شده‌اند و validation با lint/build وب تأیید شد.

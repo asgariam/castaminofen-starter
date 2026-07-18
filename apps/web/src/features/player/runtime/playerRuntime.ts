@@ -1,5 +1,5 @@
 import { createBrowserAudioEngine } from './audioEngine';
-import type { PlayableItem } from '../types';
+import type { PlayableItem, PlayerPlaybackStatus } from '../types';
 import type { PlayerState } from '../store/playerStore';
 
 export type PlayerRuntimeController = {
@@ -19,18 +19,28 @@ export type PlayerRuntimeController = {
 export function createPlayerRuntimeController(store: PlayerState): PlayerRuntimeController {
   const engine = createBrowserAudioEngine();
 
-  const syncState = () => {
+  const syncState = (snapshot?: { playbackStatus: PlayerPlaybackStatus; duration: number; currentPosition: number; error: string | null }) => {
     store.setPlaybackState({
-      currentPosition: engine.getCurrentTime(),
-      duration: engine.getDuration(),
-      error: null,
-      playbackStatus: engine.getCurrentTime() > 0 && !engine.getDuration() ? 'playing' : 'paused',
+      currentPosition: snapshot?.currentPosition ?? engine.getCurrentTime(),
+      duration: snapshot?.duration ?? engine.getDuration(),
+      error: snapshot?.error ?? null,
+      playbackStatus: snapshot?.playbackStatus ?? 'paused',
     });
   };
 
-  const unsubscribe = engine.subscribe(() => {
-    syncState();
-  });
+  const stopPlaybackGracefully = (snapshot?: { playbackStatus: PlayerPlaybackStatus; duration: number; currentPosition: number; error: string | null }) => {
+    const finalPosition = snapshot?.currentPosition ?? engine.getCurrentTime();
+    const finalDuration = snapshot?.duration ?? engine.getDuration();
+
+    engine.stop();
+    store.setPlaybackState({
+      currentItem: store.currentItem,
+      playbackStatus: 'idle',
+      duration: finalDuration,
+      currentPosition: finalPosition,
+      error: snapshot?.error ?? null,
+    });
+  };
 
   const playItem = async (item: PlayableItem) => {
     store.setCurrentItem(item);
@@ -53,6 +63,31 @@ export function createPlayerRuntimeController(store: PlayerState): PlayerRuntime
     });
   };
 
+  const moveToNextQueueItem = async () => {
+    const nextItem = store.goToNext();
+
+    if (!nextItem) {
+      stopPlaybackGracefully({
+        playbackStatus: 'idle',
+        duration: engine.getDuration(),
+        currentPosition: engine.getCurrentTime(),
+        error: null,
+      });
+      return;
+    }
+
+    await playItem(nextItem);
+  };
+
+  const unsubscribe = engine.subscribe((snapshot) => {
+    if (snapshot.playbackStatus === 'idle' && snapshot.currentPosition > 0 && store.currentItem && store.isPlaying) {
+      void moveToNextQueueItem();
+      return;
+    }
+
+    syncState(snapshot);
+  });
+
   return {
     async loadItem(item) {
       store.replaceQueue([item], 0);
@@ -68,7 +103,13 @@ export function createPlayerRuntimeController(store: PlayerState): PlayerRuntime
     },
     stop() {
       engine.stop();
-      syncState();
+      store.setPlaybackState({
+        currentItem: store.currentItem,
+        playbackStatus: 'idle',
+        duration: engine.getDuration(),
+        currentPosition: 0,
+        error: null,
+      });
     },
     setVolume(volume) {
       engine.setVolume(volume);
@@ -111,13 +152,7 @@ export function createPlayerRuntimeController(store: PlayerState): PlayerRuntime
       engine.stop();
     },
     async next() {
-      const nextItem = store.goToNext();
-
-      if (!nextItem) {
-        return;
-      }
-
-      await playItem(nextItem);
+      await moveToNextQueueItem();
     },
     async previous() {
       const previousItem = store.goToPrevious();
