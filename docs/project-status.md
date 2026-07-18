@@ -144,3 +144,9 @@
 - این مرحله مرز مالکیت، scope، غیرهدف‌ها، ریسک‌ها و checklist validation را برای اجرای بعدی روشن می‌کند.
 - برنامه‌ی فاز در [docs/phases/phase-2.16-episode-playback-consumption-migration-plan.md](./phases/phase-2.16-episode-playback-consumption-migration-plan.md) ثبت شد.
 
+## 22. وضعیت فاز 2.17
+- فاز 2.17 — Player Consumption Implementation با موفقیت اجرا شد.
+- کنترل playback در صفحه‌ی جزئیات اپیزود از مسئولیت مستقیم Episode حذف شد و از طریق Player Runtime و Playable Contract به‌عنوان اولین consumer واقعی اجرا شد.
+- صفحه‌ی اپیزود هنوز ساختار UI و جریان آپلود خود را حفظ کرد و فقط ownership playback به Player منتقل شد.
+- گزارش فاز در [docs/phases/phase-2.17-player-consumption-implementation-report.md](./phases/phase-2.17-player-consumption-implementation-report.md) ثبت شد.
+
