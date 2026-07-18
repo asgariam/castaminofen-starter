@@ -114,3 +114,15 @@
 - نیازهای داده‌ای Player، پیشنهاد قرارداد playable، مرز مالکیت، جهت وابستگی و استراتژی مهاجرت برای فازهای بعدی مستندسازی شدند.
 - این فاز بدون تغییر route، API contract، dependency یا رفتار runtime انجام شد.
 
+## 17. وضعیت فاز 2.11
+- فاز 2.11 — Player Feature Skeleton Adoption Plan به‌صورت documentation-only و بدون تغییر runtime اجرا شد.
+- skeleton آینده‌ی Player، مرز مالکیت بین Player/Episode/shared layer، تحلیل مهاجرت AudioPlayer و playerStore، و استراتژی phase-based برای implementation آینده در [docs/phases/phase-2.11-player-feature-skeleton-plan.md](./phases/phase-2.11-player-feature-skeleton-plan.md) ثبت شد.
+- این فاز بدون تغییر route، API contract، dependency یا رفتار runtime انجام شد.
+
+## 18. وضعیت فاز 2.13
+- فاز 2.13 — Player Feature Foundation Implementation با موفقیت اجرا شد.
+- مرز feature برای Player در [apps/web/src/features/player](../apps/web/src/features/player) ایجاد شد و قرارداد PlayableItem در [apps/web/src/features/player/types/index.ts](../apps/web/src/features/player/types/index.ts) تعریف شد.
+- لایه‌ی adapter بین Episode و PlayableItem در [apps/web/src/features/player/adapters/episodeToPlayable.ts](../apps/web/src/features/player/adapters/episodeToPlayable.ts) اضافه شد و state پایه‌ی Player در [apps/web/src/features/player/store/playerStore.ts](../apps/web/src/features/player/store/playerStore.ts) آماده شد.
+- مسیر قدیمی [apps/web/src/stores/playerStore.ts](../apps/web/src/stores/playerStore.ts) به‌صورت compatibility re-export حفظ شد تا رفتار و importهای فعلی بدون تغییر باقی بمانند.
+- مستندات فاز در [docs/phases/phase-2.13-player-feature-foundation-report.md](./phases/phase-2.13-player-feature-foundation-report.md) ثبت شد.
+
