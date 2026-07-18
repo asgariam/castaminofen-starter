@@ -161,3 +161,9 @@
 - state مربوط به playback در [apps/web/src/features/player/store/playerStore.ts](../apps/web/src/features/player/store/playerStore.ts) به‌صورت کاملاً feature-owned نگه‌داری شد و وابستگی‌های انتقالی مرتبط با Episode از آن حذف شد.
 - کامپوننت legacy [apps/web/src/components/AudioPlayer.tsx](../apps/web/src/components/AudioPlayer.tsx) حذف شد تا تنها یک surface پخش از طریق Player feature در اپ باقی بماند.
 - رفتار runtime بدون تغییر باقی ماند و اعتبارسنجی با lint و build وب انجام شد.
+
+## 17. وضعیت فاز 3.0
+- فاز 3.0 — Playback Queue Foundation با موفقیت اجرا شد.
+- queue مالکیتی Player در [apps/web/src/features/player/store/playerStore.ts](../apps/web/src/features/player/store/playerStore.ts) اضافه شد و actions replaceQueue، clearQueue، goToNext و goToPrevious ارائه شدند.
+- runtime Player در [apps/web/src/features/player/runtime/playerRuntime.ts](../apps/web/src/features/player/runtime/playerRuntime.ts) با load/move بین آیتم‌ها یکپارچه شد و کنترل‌های Next/Previous در [apps/web/src/features/player/components/PlayerControls.tsx](../apps/web/src/features/player/components/PlayerControls.tsx) فعال شدند.
+- این تغییر بدون تغییر route، API contract یا ownership Episode انجام شد و با lint/build وب تأیید شد.

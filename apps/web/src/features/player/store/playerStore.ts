@@ -3,6 +3,8 @@ import type { PlayableItem, PlayerPlaybackStatus, PlayerRuntimeState } from '../
 
 export type PlayerState = {
   currentItem: PlayableItem | null;
+  queue: PlayableItem[];
+  currentIndex: number;
   isPlaying: boolean;
   playbackStatus: PlayerPlaybackStatus;
   status: PlayerPlaybackStatus;
@@ -15,6 +17,10 @@ export type PlayerState = {
   shuffle: boolean;
   setCurrentItem: (item: PlayableItem) => void;
   setPlaybackState: (state: Partial<PlayerRuntimeState>) => void;
+  replaceQueue: (items: PlayableItem[], startIndex?: number) => void;
+  clearQueue: () => void;
+  goToNext: () => PlayableItem | null;
+  goToPrevious: () => PlayableItem | null;
   togglePlay: () => void;
   setVolume: (volume: number) => void;
   toggleRepeat: () => void;
@@ -26,6 +32,8 @@ const clampVolume = (value: number) => Math.min(1, Math.max(0, value));
 
 export const usePlayerStore = create<PlayerState>((set) => ({
   currentItem: null,
+  queue: [],
+  currentIndex: -1,
   isPlaying: false,
   playbackStatus: 'idle',
   status: 'idle',
@@ -37,8 +45,11 @@ export const usePlayerStore = create<PlayerState>((set) => ({
   repeatMode: 'off',
   shuffle: false,
   setCurrentItem: (item) =>
-    set({
+    set((state) => ({
+      ...state,
       currentItem: item,
+      queue: state.queue.length ? state.queue : [item],
+      currentIndex: state.queue.length ? state.currentIndex : 0,
       isPlaying: true,
       playbackStatus: 'playing',
       status: 'playing',
@@ -46,7 +57,7 @@ export const usePlayerStore = create<PlayerState>((set) => ({
       position: 0,
       duration: 0,
       error: null,
-    }),
+    })),
   setPlaybackState: (state) =>
     set((currentState) => {
       const nextPlaybackStatus = state.playbackStatus ?? currentState.playbackStatus;
@@ -66,6 +77,75 @@ export const usePlayerStore = create<PlayerState>((set) => ({
         isPlaying: nextPlaybackStatus === 'playing',
       };
     }),
+  replaceQueue: (items, startIndex = 0) =>
+    set((state) => {
+      const normalizedItems = items.filter(Boolean);
+      const safeStartIndex = normalizedItems.length
+        ? Math.max(0, Math.min(startIndex, normalizedItems.length - 1))
+        : -1;
+      const nextItem = safeStartIndex >= 0 ? normalizedItems[safeStartIndex] : null;
+
+      return {
+        ...state,
+        queue: normalizedItems,
+        currentIndex: safeStartIndex,
+        currentItem: nextItem,
+      };
+    }),
+  clearQueue: () =>
+    set((state) => ({
+      ...state,
+      queue: [],
+      currentIndex: -1,
+      currentItem: null,
+      isPlaying: false,
+      playbackStatus: 'idle',
+      status: 'idle',
+      currentPosition: 0,
+      position: 0,
+      duration: 0,
+      error: null,
+    })),
+  goToNext: () => {
+    let nextItem: PlayableItem | null = null;
+
+    set((state) => {
+      if (!state.queue.length || state.currentIndex >= state.queue.length - 1) {
+        return state;
+      }
+
+      const targetIndex = state.currentIndex + 1;
+      nextItem = state.queue[targetIndex] ?? null;
+
+      return {
+        ...state,
+        currentItem: nextItem,
+        currentIndex: targetIndex,
+      };
+    });
+
+    return nextItem;
+  },
+  goToPrevious: () => {
+    let previousItem: PlayableItem | null = null;
+
+    set((state) => {
+      if (!state.queue.length || state.currentIndex <= 0) {
+        return state;
+      }
+
+      const targetIndex = state.currentIndex - 1;
+      previousItem = state.queue[targetIndex] ?? null;
+
+      return {
+        ...state,
+        currentItem: previousItem,
+        currentIndex: targetIndex,
+      };
+    });
+
+    return previousItem;
+  },
   togglePlay: () =>
     set((state) => {
       const nextPlaybackStatus = state.isPlaying ? 'paused' : 'playing';
@@ -85,6 +165,8 @@ export const usePlayerStore = create<PlayerState>((set) => ({
   resetPlayer: () =>
     set({
       currentItem: null,
+      queue: [],
+      currentIndex: -1,
       isPlaying: false,
       playbackStatus: 'idle',
       status: 'idle',
