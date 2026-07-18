@@ -11,3 +11,11 @@ export interface PlayableItem {
   duration?: number;
   sourceType: PlayableSourceType;
 }
+
+export interface PlayerRuntimeState {
+  currentItem: PlayableItem | null;
+  playbackStatus: PlayerPlaybackStatus;
+  duration: number;
+  currentPosition: number;
+  error: string | null;
+}

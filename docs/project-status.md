@@ -126,3 +126,9 @@
 - مسیر قدیمی [apps/web/src/stores/playerStore.ts](../apps/web/src/stores/playerStore.ts) به‌صورت compatibility re-export حفظ شد تا رفتار و importهای فعلی بدون تغییر باقی بمانند.
 - مستندات فاز در [docs/phases/phase-2.13-player-feature-foundation-report.md](./phases/phase-2.13-player-feature-foundation-report.md) ثبت شد.
 
+## 19. وضعیت فاز 2.14
+- فاز 2.14 — Player Runtime Foundation Implementation با موفقیت اجرا شد.
+- abstraction audio engine در [apps/web/src/features/player/runtime/audioEngine.ts](../apps/web/src/features/player/runtime/audioEngine.ts) و runtime controller در [apps/web/src/features/player/runtime/playerRuntime.ts](../apps/web/src/features/player/runtime/playerRuntime.ts) اضافه شدند.
+- state Player برای وضعیت پخش، duration، current position و error در [apps/web/src/features/player/store/playerStore.ts](../apps/web/src/features/player/store/playerStore.ts) گسترش یافت و هوک runtime در [apps/web/src/features/player/hooks/usePlayerRuntime.ts](../apps/web/src/features/player/hooks/usePlayerRuntime.ts) در دسترس قرار گرفت.
+- مستندات فاز در [docs/phases/phase-2.14-player-runtime-foundation-report.md](./phases/phase-2.14-player-runtime-foundation-report.md) ثبت شد.
+
