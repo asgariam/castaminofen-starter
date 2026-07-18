@@ -132,3 +132,15 @@
 - state Player برای وضعیت پخش، duration، current position و error در [apps/web/src/features/player/store/playerStore.ts](../apps/web/src/features/player/store/playerStore.ts) گسترش یافت و هوک runtime در [apps/web/src/features/player/hooks/usePlayerRuntime.ts](../apps/web/src/features/player/hooks/usePlayerRuntime.ts) در دسترس قرار گرفت.
 - مستندات فاز در [docs/phases/phase-2.14-player-runtime-foundation-report.md](./phases/phase-2.14-player-runtime-foundation-report.md) ثبت شد.
 
+## 20. وضعیت فاز 2.15
+- فاز 2.15 — Player Runtime Integration Audit به‌صورت documentation-only و بدون تغییر runtime یا قراردادهای موجود انجام شد.
+- وضعیت فعلی integration بین Player runtime، Episode feature، AudioPlayer legacy و store compatibility بررسی شد.
+- نتیجه audit نشان داد runtime boundary در سطح فعلی سالم است و repository برای اولین Player consumption migration آماده است، مشروط به اینکه مهاجرت با حفظ رفتار فعلی و بدون وارد کردن UI یا queue/offline layer انجام شود.
+- گزارش فاز در [docs/phases/phase-2.15-player-runtime-integration-audit-report.md](./phases/phase-2.15-player-runtime-integration-audit-report.md) ثبت شد.
+
+## 21. وضعیت فاز 2.16
+- فاز 2.16 — Episode Playback Consumption Migration Plan به‌صورت planning-only و بدون تغییر runtime یا قراردادهای موجود ثبت شد.
+- هدف این فاز، مهاجرت کنترل playback از Episode به Player Runtime از طریق Playable Contract و با حفظ رفتار فعلی است.
+- این مرحله مرز مالکیت، scope، غیرهدف‌ها، ریسک‌ها و checklist validation را برای اجرای بعدی روشن می‌کند.
+- برنامه‌ی فاز در [docs/phases/phase-2.16-episode-playback-consumption-migration-plan.md](./phases/phase-2.16-episode-playback-consumption-migration-plan.md) ثبت شد.
+
