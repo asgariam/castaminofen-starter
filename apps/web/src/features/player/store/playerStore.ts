@@ -8,8 +8,10 @@ export type PlayerState = {
   currentEpisode?: Episode | null;
   isPlaying: boolean;
   playbackStatus: PlayerPlaybackStatus;
+  status: PlayerPlaybackStatus;
   duration: number;
   currentPosition: number;
+  position: number;
   error: string | null;
   volume: number;
   repeatMode: 'off' | 'one' | 'all';
@@ -31,8 +33,10 @@ export const usePlayerStore = create<PlayerState>((set) => ({
   currentEpisode: null,
   isPlaying: false,
   playbackStatus: 'idle',
+  status: 'idle',
   duration: 0,
   currentPosition: 0,
+  position: 0,
   error: null,
   volume: 0.8,
   repeatMode: 'off',
@@ -45,6 +49,11 @@ export const usePlayerStore = create<PlayerState>((set) => ({
       currentEpisode: episode,
       isPlaying: true,
       playbackStatus: 'playing',
+      status: 'playing',
+      currentPosition: 0,
+      position: 0,
+      duration: 0,
+      error: null,
     });
   },
   setCurrentItem: (item) =>
@@ -53,18 +62,41 @@ export const usePlayerStore = create<PlayerState>((set) => ({
       currentEpisode: null,
       isPlaying: true,
       playbackStatus: 'playing',
+      status: 'playing',
+      currentPosition: 0,
+      position: 0,
+      duration: 0,
+      error: null,
     }),
   setPlaybackState: (state) =>
-    set((currentState) => ({
-      ...currentState,
-      ...state,
-      isPlaying: state.playbackStatus === 'playing',
-    })),
+    set((currentState) => {
+      const nextPlaybackStatus = state.playbackStatus ?? currentState.playbackStatus;
+      const nextPosition = state.currentPosition ?? currentState.currentPosition;
+      const nextDuration = state.duration ?? currentState.duration;
+      const nextError = state.error ?? currentState.error;
+
+      return {
+        ...currentState,
+        ...state,
+        playbackStatus: nextPlaybackStatus,
+        status: nextPlaybackStatus,
+        currentPosition: nextPosition,
+        position: nextPosition,
+        duration: nextDuration,
+        error: nextError,
+        isPlaying: nextPlaybackStatus === 'playing',
+      };
+    }),
   togglePlay: () =>
-    set((state) => ({
-      isPlaying: !state.isPlaying,
-      playbackStatus: state.isPlaying ? 'paused' : 'playing',
-    })),
+    set((state) => {
+      const nextPlaybackStatus = state.isPlaying ? 'paused' : 'playing';
+
+      return {
+        isPlaying: !state.isPlaying,
+        playbackStatus: nextPlaybackStatus,
+        status: nextPlaybackStatus,
+      };
+    }),
   setVolume: (volume) => set({ volume: clampVolume(volume) }),
   toggleRepeat: () =>
     set((state) => ({
@@ -77,8 +109,10 @@ export const usePlayerStore = create<PlayerState>((set) => ({
       currentEpisode: null,
       isPlaying: false,
       playbackStatus: 'idle',
+      status: 'idle',
       duration: 0,
       currentPosition: 0,
+      position: 0,
       error: null,
       volume: 0.8,
       repeatMode: 'off',

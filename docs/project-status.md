@@ -149,4 +149,9 @@
 - کنترل playback در صفحه‌ی جزئیات اپیزود از مسئولیت مستقیم Episode حذف شد و از طریق Player Runtime و Playable Contract به‌عنوان اولین consumer واقعی اجرا شد.
 - صفحه‌ی اپیزود هنوز ساختار UI و جریان آپلود خود را حفظ کرد و فقط ownership playback به Player منتقل شد.
 - گزارش فاز در [docs/phases/phase-2.17-player-consumption-implementation-report.md](./phases/phase-2.17-player-consumption-implementation-report.md) ثبت شد.
-
+## 15. وضعیت فاز 2.18
+- فاز 2.18 — Player UI Foundation & Runtime Surface Migration با موفقیت اجرا شد.
+- Player به‌صورت یک feature مستقل با کامپوننت‌های UI برای info، controls، progress و volume در [apps/web/src/features/player/components](../apps/web/src/features/player/components) پیاده‌سازی شد.
+- PlayerBar در [apps/web/src/components/layout/app-shell.tsx](../apps/web/src/components/layout/app-shell.tsx) به‌عنوان surface پخش در بالای shell اضافه شد.
+- صفحه‌ی جزئیات اپیزود از نمایش کنترل‌های مستقیم playback پاک شد و فقط به metadata و workflow آپلود محدود شد.
+- اعتبارسنجی با build و lint وب انجام شد و بدون خطای بحرانی به پایان رسید.
