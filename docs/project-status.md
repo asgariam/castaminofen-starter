@@ -155,3 +155,9 @@
 - PlayerBar در [apps/web/src/components/layout/app-shell.tsx](../apps/web/src/components/layout/app-shell.tsx) به‌عنوان surface پخش در بالای shell اضافه شد.
 - صفحه‌ی جزئیات اپیزود از نمایش کنترل‌های مستقیم playback پاک شد و فقط به metadata و workflow آپلود محدود شد.
 - اعتبارسنجی با build و lint وب انجام شد و بدون خطای بحرانی به پایان رسید.
+
+## 16. وضعیت فاز 2.19
+- فاز 2.19 — Player Integration Stabilization & Architecture Cleanup با موفقیت اجرا شد.
+- state مربوط به playback در [apps/web/src/features/player/store/playerStore.ts](../apps/web/src/features/player/store/playerStore.ts) به‌صورت کاملاً feature-owned نگه‌داری شد و وابستگی‌های انتقالی مرتبط با Episode از آن حذف شد.
+- کامپوننت legacy [apps/web/src/components/AudioPlayer.tsx](../apps/web/src/components/AudioPlayer.tsx) حذف شد تا تنها یک surface پخش از طریق Player feature در اپ باقی بماند.
+- رفتار runtime بدون تغییر باقی ماند و اعتبارسنجی با lint و build وب انجام شد.

@@ -1,11 +1,8 @@
 import { create } from 'zustand';
-import type { Episode } from '@/lib/types';
-import { mapEpisodeToPlayableItem } from '../adapters/episodeToPlayable';
 import type { PlayableItem, PlayerPlaybackStatus, PlayerRuntimeState } from '../types';
 
 export type PlayerState = {
   currentItem: PlayableItem | null;
-  currentEpisode?: Episode | null;
   isPlaying: boolean;
   playbackStatus: PlayerPlaybackStatus;
   status: PlayerPlaybackStatus;
@@ -16,7 +13,6 @@ export type PlayerState = {
   volume: number;
   repeatMode: 'off' | 'one' | 'all';
   shuffle: boolean;
-  setCurrentEpisode: (episode: Episode) => void;
   setCurrentItem: (item: PlayableItem) => void;
   setPlaybackState: (state: Partial<PlayerRuntimeState>) => void;
   togglePlay: () => void;
@@ -30,7 +26,6 @@ const clampVolume = (value: number) => Math.min(1, Math.max(0, value));
 
 export const usePlayerStore = create<PlayerState>((set) => ({
   currentItem: null,
-  currentEpisode: null,
   isPlaying: false,
   playbackStatus: 'idle',
   status: 'idle',
@@ -41,25 +36,9 @@ export const usePlayerStore = create<PlayerState>((set) => ({
   volume: 0.8,
   repeatMode: 'off',
   shuffle: false,
-  setCurrentEpisode: (episode) => {
-    const playableItem = mapEpisodeToPlayableItem(episode);
-
-    set({
-      currentItem: playableItem,
-      currentEpisode: episode,
-      isPlaying: true,
-      playbackStatus: 'playing',
-      status: 'playing',
-      currentPosition: 0,
-      position: 0,
-      duration: 0,
-      error: null,
-    });
-  },
   setCurrentItem: (item) =>
     set({
       currentItem: item,
-      currentEpisode: null,
       isPlaying: true,
       playbackStatus: 'playing',
       status: 'playing',
@@ -106,7 +85,6 @@ export const usePlayerStore = create<PlayerState>((set) => ({
   resetPlayer: () =>
     set({
       currentItem: null,
-      currentEpisode: null,
       isPlaying: false,
       playbackStatus: 'idle',
       status: 'idle',
