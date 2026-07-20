@@ -202,3 +202,9 @@
 - بازبینی معماری Player Runtime، Store، Episode boundary، UI surface و Queue/Playback modes انجام شد و نتیجه آن READY FOR PHASE 3.3 IMPLEMENTATION بود.
 - گزارش کامل در [docs/phases/phase-3.3-player-runtime-ux-readiness-audit-report.md](./phases/phase-3.3-player-runtime-ux-readiness-audit-report.md) ثبت شد.
 - اعتبارسنجی با lint و build وب انجام شد و هیچ تغییر runtime، API یا route ایجاد نشد.
+
+## 24. وضعیت فاز 3.5 (planning-only)
+- فاز 3.5 — Player Queue Experience Foundation Plan به‌صورت planning-only و بدون تغییر کد اجرا شد.
+- هدف این فاز، طراحی اولین تجربه‌ی کاربری Queue روی معماری پایدار Player فعلی، تعریف مرزهای UI/state/runtime، و ثبت نیازهای داده و ریسک‌ها بدون وارد کردن over-engineering است.
+- گزارش فاز در [docs/development/phase-3.5-player-queue-experience-plan.md](./development/phase-3.5-player-queue-experience-plan.md) ثبت شده است.
+- نتیجه نهایی این بازبینی READY FOR IMPLEMENTATION است.
