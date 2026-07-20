@@ -1,6 +1,6 @@
 import { createBrowserAudioEngine, type AudioEngine } from './audioEngine';
 import type { PlayableItem, PlayerPlaybackStatus } from '../types';
-import type { PlayerState } from '../store/playerStore';
+import { usePlayerStore, type PlayerState } from '../store/playerStore';
 
 export type PlayerRuntimeController = {
   loadItem(item: PlayableItem): Promise<void>;
@@ -10,6 +10,8 @@ export type PlayerRuntimeController = {
   setVolume(volume: number): void;
   setCurrentTime(position: number): void;
   replaceQueue(items: PlayableItem[], startIndex?: number): Promise<void>;
+  selectQueueItem(index: number): Promise<void>;
+  removeQueueItem(index: number): Promise<void>;
   clearQueue(): void;
   next(): Promise<void>;
   previous(): Promise<void>;
@@ -231,6 +233,59 @@ export function createPlayerRuntimeController(store: PlayerState, engine: AudioE
 
       store.replaceQueue(items, targetIndex);
       await playItem(targetItem);
+    },
+    async selectQueueItem(index) {
+      const targetItem = store.selectQueueItem(index);
+
+      if (!targetItem?.audioUrl) {
+        store.setPlaybackState({
+          currentItem: targetItem,
+          playbackStatus: 'idle',
+          duration: 0,
+          currentPosition: 0,
+          error: targetItem ? 'Audio source is unavailable.' : 'No playable item selected.',
+        });
+        engine.stop();
+        return;
+      }
+
+      await playItem(targetItem);
+    },
+    async removeQueueItem(index) {
+      const currentItemId = store.currentItem?.id;
+      store.removeQueueItem(index);
+      const latestState = usePlayerStore.getState();
+
+      if (!latestState.queue.length) {
+        store.setPlaybackState({
+          currentItem: null,
+          playbackStatus: 'idle',
+          duration: 0,
+          currentPosition: 0,
+          error: null,
+        });
+        engine.stop();
+        return;
+      }
+
+      const isCurrentItemRemoved = currentItemId ? latestState.currentItem?.id !== currentItemId : false;
+
+      if (isCurrentItemRemoved) {
+        const nextItem = latestState.currentItem;
+        if (!nextItem?.audioUrl) {
+          store.setPlaybackState({
+            currentItem: nextItem,
+            playbackStatus: 'idle',
+            duration: 0,
+            currentPosition: 0,
+            error: nextItem ? 'Audio source is unavailable.' : null,
+          });
+          engine.stop();
+          return;
+        }
+
+        await playItem(nextItem);
+      }
     },
     clearQueue() {
       store.clearQueue();

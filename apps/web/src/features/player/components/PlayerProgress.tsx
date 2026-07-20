@@ -17,17 +17,17 @@ const formatTime = (seconds: number) => {
 
 export function PlayerProgress() {
   const playerRuntime = usePlayerRuntime();
-  const { position, duration, currentItem } = usePlayerState();
+  const { currentPosition, duration, currentItem } = usePlayerState();
 
   return (
     <div className="flex flex-1 items-center gap-3">
-      <span className="min-w-[2.75rem] text-right text-xs text-text-secondary">{formatTime(position)}</span>
+      <span className="min-w-[2.75rem] text-right text-xs text-text-secondary">{formatTime(currentPosition)}</span>
       <input
         type="range"
         min={0}
         max={duration || 0}
         step={1}
-        value={position}
+        value={currentPosition}
         onChange={(event) => playerRuntime.setCurrentTime(Number(event.target.value))}
         className="h-2 w-full cursor-pointer appearance-none rounded-full bg-surface-tertiary accent-accent"
         disabled={!currentItem?.audioUrl}

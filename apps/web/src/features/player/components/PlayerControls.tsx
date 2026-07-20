@@ -1,11 +1,11 @@
 'use client';
 
-import { ChevronLeft, ChevronRight, Pause, Play, Repeat1, Repeat2, Shuffle, Square } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ListMusic, Pause, Play, Repeat1, Repeat2, Shuffle, Square } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { usePlayerRuntime } from '../hooks/usePlayerRuntime';
 import { usePlayerState } from '../hooks/usePlayerState';
 
-export function PlayerControls() {
+export function PlayerControls({ isQueueOpen, onToggleQueue }: { isQueueOpen: boolean; onToggleQueue: () => void }) {
   const playerRuntime = usePlayerRuntime();
   const { currentItem, playbackStatus, isPlaying, queue, currentIndex, repeatMode, shuffleEnabled, toggleRepeat, toggleShuffle } = usePlayerState();
 
@@ -103,6 +103,17 @@ export function PlayerControls() {
         aria-label="Next item"
       >
         <ChevronRight size={16} />
+      </Button>
+      <Button
+        type="button"
+        variant={isQueueOpen ? 'secondary' : 'ghost'}
+        size="sm"
+        className={`h-10 w-10 rounded-full p-0 ${isQueueOpen ? 'text-primary' : ''}`}
+        onClick={onToggleQueue}
+        aria-label="Open queue"
+        aria-pressed={isQueueOpen}
+      >
+        <ListMusic size={16} />
       </Button>
     </div>
   );

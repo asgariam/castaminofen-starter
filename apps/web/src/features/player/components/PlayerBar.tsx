@@ -1,13 +1,16 @@
 'use client';
 
+import { useState } from 'react';
 import { PlayerControls } from './PlayerControls';
 import { PlayerInfo } from './PlayerInfo';
 import { PlayerProgress } from './PlayerProgress';
 import { PlayerVolume } from './PlayerVolume';
+import { QueueSheet } from './QueueSheet';
 import { usePlayerState } from '../hooks/usePlayerState';
 
 export function PlayerBar() {
   const { currentItem, playbackStatus, error, queue } = usePlayerState();
+  const [isQueueOpen, setIsQueueOpen] = useState(false);
 
   return (
     <div className="rounded-2xl border border-border bg-surface-secondary/95 p-3 shadow-soft backdrop-blur">
@@ -24,7 +27,7 @@ export function PlayerBar() {
           {error ? <p className="mt-1 text-xs text-accent">{error}</p> : null}
         </div>
         <div className="flex items-center justify-between gap-3 md:justify-center">
-          <PlayerControls />
+          <PlayerControls isQueueOpen={isQueueOpen} onToggleQueue={() => setIsQueueOpen((open) => !open)} />
           <div className="hidden md:block md:flex-1">
             <PlayerProgress />
           </div>
@@ -36,6 +39,7 @@ export function PlayerBar() {
       <div className="mt-2 md:hidden">
         <PlayerProgress />
       </div>
+      <QueueSheet open={isQueueOpen} onClose={() => setIsQueueOpen(false)} />
     </div>
   );
 }

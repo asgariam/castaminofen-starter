@@ -16,6 +16,8 @@ export type PlayerState = {
   setCurrentItem: (item: PlayableItem) => void;
   setPlaybackState: (state: Partial<PlayerRuntimeState>) => void;
   replaceQueue: (items: PlayableItem[], startIndex?: number) => void;
+  selectQueueItem: (index: number) => PlayableItem | null;
+  removeQueueItem: (index: number) => void;
   clearQueue: () => void;
   goToNext: () => PlayableItem | null;
   goToPrevious: () => PlayableItem | null;
@@ -86,6 +88,73 @@ export const usePlayerStore = create<PlayerState>((set) => ({
         queue: normalizedItems,
         currentIndex: safeStartIndex,
         currentItem: nextItem,
+      };
+    }),
+  selectQueueItem: (index) => {
+    let selectedItem: PlayableItem | null = null;
+
+    set((state) => {
+      if (!state.queue.length || index < 0 || index >= state.queue.length) {
+        return state;
+      }
+
+      selectedItem = state.queue[index] ?? null;
+
+      return {
+        ...state,
+        currentItem: selectedItem,
+        currentIndex: index,
+        isPlaying: true,
+        playbackStatus: 'playing',
+        currentPosition: 0,
+        duration: 0,
+        error: null,
+      };
+    });
+
+    return selectedItem;
+  },
+  removeQueueItem: (index) =>
+    set((state) => {
+      if (!state.queue.length || index < 0 || index >= state.queue.length) {
+        return state;
+      }
+
+      const nextQueue = state.queue.filter((_, queueIndex) => queueIndex !== index);
+      const isRemovingCurrentItem = index === state.currentIndex;
+
+      if (!nextQueue.length) {
+        return {
+          ...state,
+          queue: [],
+          currentIndex: -1,
+          currentItem: null,
+          isPlaying: false,
+          playbackStatus: 'idle',
+          currentPosition: 0,
+          duration: 0,
+          error: null,
+        };
+      }
+
+      const nextIndex = isRemovingCurrentItem
+        ? Math.max(0, Math.min(index, nextQueue.length - 1))
+        : state.currentIndex > index
+          ? state.currentIndex - 1
+          : state.currentIndex;
+
+      const nextCurrentItem = isRemovingCurrentItem ? nextQueue[nextIndex] : state.currentItem;
+
+      return {
+        ...state,
+        queue: nextQueue,
+        currentIndex: nextIndex,
+        currentItem: nextCurrentItem,
+        playbackStatus: isRemovingCurrentItem ? 'playing' : state.playbackStatus,
+        isPlaying: isRemovingCurrentItem ? true : state.isPlaying,
+        currentPosition: isRemovingCurrentItem ? 0 : state.currentPosition,
+        duration: isRemovingCurrentItem ? 0 : state.duration,
+        error: null,
       };
     }),
   clearQueue: () =>
