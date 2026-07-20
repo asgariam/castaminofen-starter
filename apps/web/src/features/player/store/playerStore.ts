@@ -28,9 +28,119 @@ export type PlayerState = {
   resetPlayer: () => void;
 };
 
+const STORAGE_KEY = 'castaminofen_player_preferences';
+const DEFAULT_VOLUME = 0.8;
+const DEFAULT_REPEAT_MODE: PlayerRepeatMode = 'off';
+const DEFAULT_SHUFFLE_ENABLED = false;
+
+type PlayerPreferences = {
+  volume: number;
+  repeatMode: PlayerRepeatMode;
+  shuffleEnabled: boolean;
+};
+
+type PlayerStorage = Pick<Storage, 'getItem' | 'setItem'>;
+
+type CreatePlayerStoreOptions = {
+  storage?: PlayerStorage | null;
+  initialPreferences?: Partial<PlayerPreferences>;
+};
+
 const clampVolume = (value: number) => Math.min(1, Math.max(0, value));
 
-export const usePlayerStore = create<PlayerState>((set) => ({
+const isRepeatMode = (value: unknown): value is PlayerRepeatMode => value === 'off' || value === 'one' || value === 'queue';
+const isBoolean = (value: unknown): value is boolean => typeof value === 'boolean';
+
+const getStorage = (storage?: PlayerStorage | null) => {
+  if (storage) {
+    return storage;
+  }
+
+  if (typeof window === 'undefined') {
+    return null;
+  }
+
+  try {
+    return window.localStorage ?? null;
+  } catch {
+    return null;
+  }
+};
+
+const resolvePreferences = (storage: PlayerStorage | null | undefined, initialPreferences?: Partial<PlayerPreferences>): PlayerPreferences => {
+  if (initialPreferences) {
+    const volume = typeof initialPreferences.volume === 'number' && Number.isFinite(initialPreferences.volume) && initialPreferences.volume >= 0 && initialPreferences.volume <= 1
+      ? clampVolume(initialPreferences.volume)
+      : DEFAULT_VOLUME;
+    const repeatMode = isRepeatMode(initialPreferences.repeatMode) ? initialPreferences.repeatMode : DEFAULT_REPEAT_MODE;
+    const shuffleEnabled = isBoolean(initialPreferences.shuffleEnabled) ? initialPreferences.shuffleEnabled : DEFAULT_SHUFFLE_ENABLED;
+
+    return {
+      volume,
+      repeatMode,
+      shuffleEnabled,
+    };
+  }
+
+  if (!storage) {
+    return {
+      volume: DEFAULT_VOLUME,
+      repeatMode: DEFAULT_REPEAT_MODE,
+      shuffleEnabled: DEFAULT_SHUFFLE_ENABLED,
+    };
+  }
+
+  try {
+    const value = storage.getItem(STORAGE_KEY);
+
+    if (!value) {
+      return {
+        volume: DEFAULT_VOLUME,
+        repeatMode: DEFAULT_REPEAT_MODE,
+        shuffleEnabled: DEFAULT_SHUFFLE_ENABLED,
+      };
+    }
+
+    const parsed = JSON.parse(value) as Partial<PlayerPreferences>;
+    const volume = typeof parsed.volume === 'number' && Number.isFinite(parsed.volume) && parsed.volume >= 0 && parsed.volume <= 1
+      ? clampVolume(parsed.volume)
+      : DEFAULT_VOLUME;
+    const repeatMode = isRepeatMode(parsed.repeatMode) ? parsed.repeatMode : DEFAULT_REPEAT_MODE;
+    const shuffleEnabled = isBoolean(parsed.shuffleEnabled) ? parsed.shuffleEnabled : DEFAULT_SHUFFLE_ENABLED;
+
+    return {
+      volume,
+      repeatMode,
+      shuffleEnabled,
+    };
+  } catch {
+    return {
+      volume: DEFAULT_VOLUME,
+      repeatMode: DEFAULT_REPEAT_MODE,
+      shuffleEnabled: DEFAULT_SHUFFLE_ENABLED,
+    };
+  }
+};
+
+const persistPreferences = (preferences: PlayerPreferences, storage?: PlayerStorage | null) => {
+  const resolvedStorage = getStorage(storage);
+
+  if (!resolvedStorage) {
+    return;
+  }
+
+  try {
+    resolvedStorage.setItem(STORAGE_KEY, JSON.stringify(preferences));
+  } catch {
+    // Ignore storage failures and keep runtime behavior intact.
+  }
+};
+
+export function createPlayerStore(options?: CreatePlayerStoreOptions) {
+  const storage = getStorage(options?.storage);
+  const initialPreferences = resolvePreferences(storage, options?.initialPreferences);
+
+  return create<PlayerState>((set) => ({
   currentItem: null,
   queue: [],
   currentIndex: -1,
@@ -39,9 +149,9 @@ export const usePlayerStore = create<PlayerState>((set) => ({
   duration: 0,
   currentPosition: 0,
   error: null,
-  volume: 0.8,
-  repeatMode: 'off',
-  shuffleEnabled: false,
+  volume: initialPreferences.volume,
+  repeatMode: initialPreferences.repeatMode,
+  shuffleEnabled: initialPreferences.shuffleEnabled,
   setCurrentItem: (item) =>
     set((state) => {
       const queue = state.queue.length ? state.queue : [item];
@@ -253,25 +363,68 @@ export const usePlayerStore = create<PlayerState>((set) => ({
 
     return previousItem;
   },
-  setVolume: (volume) => set({ volume: clampVolume(volume) }),
-  toggleRepeat: () =>
-    set((state) => ({
-      repeatMode: state.repeatMode === 'off' ? 'one' : state.repeatMode === 'one' ? 'queue' : 'off',
-    })),
-  setShuffle: (enabled) => set({ shuffleEnabled: enabled }),
-  toggleShuffle: () => set((state) => ({ shuffleEnabled: !state.shuffleEnabled })),
-  resetPlayer: () =>
-    set({
-      currentItem: null,
-      queue: [],
-      currentIndex: -1,
-      isPlaying: false,
-      playbackStatus: 'idle',
-      duration: 0,
-      currentPosition: 0,
-      error: null,
-      volume: 0.8,
-      repeatMode: 'off',
-      shuffleEnabled: false,
+  setVolume: (volume) =>
+    set((state) => {
+      const nextState = {
+        ...state,
+        volume: clampVolume(volume),
+      };
+
+      persistPreferences({ volume: nextState.volume, repeatMode: nextState.repeatMode, shuffleEnabled: nextState.shuffleEnabled }, storage);
+      return nextState;
     }),
-}));
+  toggleRepeat: () =>
+    set((state) => {
+      const nextRepeatMode: PlayerRepeatMode = state.repeatMode === 'off' ? 'one' : state.repeatMode === 'one' ? 'queue' : 'off';
+      const nextState = {
+        ...state,
+        repeatMode: nextRepeatMode,
+      };
+
+      persistPreferences({ volume: nextState.volume, repeatMode: nextState.repeatMode, shuffleEnabled: nextState.shuffleEnabled }, storage);
+      return nextState;
+    }),
+  setShuffle: (enabled) =>
+    set((state) => {
+      const nextState = {
+        ...state,
+        shuffleEnabled: enabled,
+      };
+
+      persistPreferences({ volume: nextState.volume, repeatMode: nextState.repeatMode, shuffleEnabled: nextState.shuffleEnabled }, storage);
+      return nextState;
+    }),
+  toggleShuffle: () =>
+    set((state) => {
+      const nextState = {
+        ...state,
+        shuffleEnabled: !state.shuffleEnabled,
+      };
+
+      persistPreferences({ volume: nextState.volume, repeatMode: nextState.repeatMode, shuffleEnabled: nextState.shuffleEnabled }, storage);
+      return nextState;
+    }),
+  resetPlayer: () =>
+    set((state) => {
+      const nextState: PlayerState = {
+        ...state,
+        currentItem: null,
+        queue: [],
+        currentIndex: -1,
+        isPlaying: false,
+        playbackStatus: 'idle',
+        duration: 0,
+        currentPosition: 0,
+        error: null,
+        volume: DEFAULT_VOLUME,
+        repeatMode: DEFAULT_REPEAT_MODE,
+        shuffleEnabled: DEFAULT_SHUFFLE_ENABLED,
+      };
+
+      persistPreferences({ volume: nextState.volume, repeatMode: nextState.repeatMode, shuffleEnabled: nextState.shuffleEnabled }, storage);
+      return nextState;
+    }),
+  }));
+}
+
+export const usePlayerStore = createPlayerStore();

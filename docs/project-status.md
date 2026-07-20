@@ -214,3 +214,9 @@
 - یک لایه‌ی یکپارچه‌ی سبک برای میان‌برهای صفحه‌کلید و Media Session API به Player اضافه شد و هم‌زمان ownership فعلی Runtime، Store و PlayableItem بدون تغییر باقی ماند.
 - رفتار Play/Pause، Seek، Next/Previous و جلوگیری از تداخل با ورودی‌های قابل ویرایش در این فاز تأیید شد.
 - گزارش فاز در [docs/reports/phase-3.8-player-platform-integration-report.md](./reports/phase-3.8-player-platform-integration-report.md) ثبت شده است.
+
+## 26. وضعیت فاز 3.9
+- فاز 3.9 — Player Persistence Foundation با موفقیت اجرا شد.
+- حالت‌های پایدار Player شامل volume، repeat mode و shuffle state از طریق store feature-owned در مرورگر ذخیره و در راه‌اندازی مجدد بازیابی می‌شوند.
+- این پیاده‌سازی بدون ورود به new persistence architecture، بدون تغییر ownership، بدون تغییر API contract و بدون تغییر PlayableItem contract انجام شد.
+- گزارش فاز در [docs/reports/phase-3.9-player-persistence-foundation-report.md](./reports/phase-3.9-player-persistence-foundation-report.md) ثبت شده است.
