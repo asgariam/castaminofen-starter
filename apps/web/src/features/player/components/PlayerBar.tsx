@@ -7,10 +7,21 @@ import { PlayerProgress } from './PlayerProgress';
 import { PlayerVolume } from './PlayerVolume';
 import { QueueSheet } from './QueueSheet';
 import { usePlayerState } from '../hooks/usePlayerState';
+import { usePlayerRuntime } from '../hooks/usePlayerRuntime';
+import { usePlayerPlatformIntegration } from '../runtime/playerPlatformIntegration';
 
 export function PlayerBar() {
-  const { currentItem, playbackStatus, error, queue } = usePlayerState();
+  const playerRuntime = usePlayerRuntime();
+  const { currentItem, playbackStatus, error, queue, currentPosition, isPlaying } = usePlayerState();
   const [isQueueOpen, setIsQueueOpen] = useState(false);
+
+  usePlayerPlatformIntegration({
+    playerRuntime,
+    currentItem,
+    playbackStatus,
+    currentPosition,
+    isPlaying,
+  });
 
   return (
     <div className="rounded-2xl border border-border bg-surface-secondary/95 p-3 shadow-soft backdrop-blur">

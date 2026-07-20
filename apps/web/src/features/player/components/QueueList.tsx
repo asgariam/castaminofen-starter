@@ -9,7 +9,7 @@ export function QueueList({ onClose }: { onClose: () => void }) {
   const playerRuntime = usePlayerRuntime();
 
   return (
-    <div className="mt-4 space-y-2 overflow-y-auto pb-4">
+    <div className="mt-4 space-y-2 overflow-y-auto pb-4" role="list" aria-label="Playback queue">
       {queue.map((item, index) => (
         <QueueListItem
           key={item.id}

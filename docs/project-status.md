@@ -208,3 +208,9 @@
 - هدف این فاز، طراحی اولین تجربه‌ی کاربری Queue روی معماری پایدار Player فعلی، تعریف مرزهای UI/state/runtime، و ثبت نیازهای داده و ریسک‌ها بدون وارد کردن over-engineering است.
 - گزارش فاز در [docs/development/phase-3.5-player-queue-experience-plan.md](./development/phase-3.5-player-queue-experience-plan.md) ثبت شده است.
 - نتیجه نهایی این بازبینی READY FOR IMPLEMENTATION است.
+
+## 25. وضعیت فاز 3.8
+- فاز 3.8 — Player Platform Integration Foundation با موفقیت اجرا شد.
+- یک لایه‌ی یکپارچه‌ی سبک برای میان‌برهای صفحه‌کلید و Media Session API به Player اضافه شد و هم‌زمان ownership فعلی Runtime، Store و PlayableItem بدون تغییر باقی ماند.
+- رفتار Play/Pause، Seek، Next/Previous و جلوگیری از تداخل با ورودی‌های قابل ویرایش در این فاز تأیید شد.
+- گزارش فاز در [docs/reports/phase-3.8-player-platform-integration-report.md](./reports/phase-3.8-player-platform-integration-report.md) ثبت شده است.

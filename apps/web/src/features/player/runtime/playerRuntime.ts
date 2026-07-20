@@ -23,6 +23,7 @@ export function createPlayerRuntimeController(store: PlayerState, engine: AudioE
   // rapid load/play requests happen. Incrementing this token makes earlier
   // promises no-ops so they don't overwrite newer state.
   let currentLoadToken = 0;
+  const getLatestState = () => usePlayerStore.getState();
 
   const syncState = (snapshot?: { playbackStatus: PlayerPlaybackStatus; duration: number; currentPosition: number; error: string | null }) => {
     store.setPlaybackState({
@@ -36,10 +37,11 @@ export function createPlayerRuntimeController(store: PlayerState, engine: AudioE
   const stopPlaybackGracefully = (snapshot?: { playbackStatus: PlayerPlaybackStatus; duration: number; currentPosition: number; error: string | null }) => {
     const finalPosition = snapshot?.currentPosition ?? engine.getCurrentTime();
     const finalDuration = snapshot?.duration ?? engine.getDuration();
+    const latestState = getLatestState();
 
     engine.stop();
     store.setPlaybackState({
-      currentItem: store.currentItem,
+      currentItem: latestState.currentItem,
       playbackStatus: 'idle',
       duration: finalDuration,
       currentPosition: finalPosition,
@@ -103,7 +105,9 @@ export function createPlayerRuntimeController(store: PlayerState, engine: AudioE
   };
 
   const moveToNextQueueItem = async () => {
-    if (!store.queue.length) {
+    const latestState = getLatestState();
+
+    if (!latestState.queue.length) {
       stopPlaybackGracefully({
         playbackStatus: 'idle',
         duration: engine.getDuration(),
@@ -113,8 +117,8 @@ export function createPlayerRuntimeController(store: PlayerState, engine: AudioE
       return;
     }
 
-    if (store.repeatMode === 'one' && store.currentItem) {
-      await playItem(store.currentItem);
+    if (latestState.repeatMode === 'one' && latestState.currentItem) {
+      await playItem(latestState.currentItem);
       return;
     }
 
@@ -134,7 +138,9 @@ export function createPlayerRuntimeController(store: PlayerState, engine: AudioE
   };
 
   const unsubscribe = engine.subscribe((snapshot) => {
-    if (snapshot.playbackStatus === 'idle' && snapshot.currentPosition > 0 && store.currentItem && store.isPlaying) {
+    const latestState = getLatestState();
+
+    if (snapshot.playbackStatus === 'idle' && snapshot.currentPosition > 0 && latestState.currentItem && latestState.isPlaying) {
       void moveToNextQueueItem();
       return;
     }
@@ -158,12 +164,14 @@ export function createPlayerRuntimeController(store: PlayerState, engine: AudioE
       await playItem(item);
     },
     async play() {
-      if (!store.currentItem?.audioUrl) {
+      const latestState = getLatestState();
+
+      if (!latestState.currentItem?.audioUrl) {
         store.setPlaybackState({
           playbackStatus: 'idle',
           duration: 0,
           currentPosition: 0,
-          error: store.currentItem ? 'Audio source is unavailable.' : 'No playable item selected.',
+          error: latestState.currentItem ? 'Audio source is unavailable.' : 'No playable item selected.',
         });
         engine.stop();
         return;
@@ -195,9 +203,11 @@ export function createPlayerRuntimeController(store: PlayerState, engine: AudioE
       syncState();
     },
     stop() {
+      const latestState = getLatestState();
+
       engine.stop();
       store.setPlaybackState({
-        currentItem: store.currentItem,
+        currentItem: latestState.currentItem,
         playbackStatus: 'idle',
         duration: engine.getDuration(),
         currentPosition: 0,
@@ -252,9 +262,9 @@ export function createPlayerRuntimeController(store: PlayerState, engine: AudioE
       await playItem(targetItem);
     },
     async removeQueueItem(index) {
-      const currentItemId = store.currentItem?.id;
+      const currentItemId = getLatestState().currentItem?.id;
       store.removeQueueItem(index);
-      const latestState = usePlayerStore.getState();
+      const latestState = getLatestState();
 
       if (!latestState.queue.length) {
         store.setPlaybackState({
@@ -302,7 +312,9 @@ export function createPlayerRuntimeController(store: PlayerState, engine: AudioE
       await moveToNextQueueItem();
     },
     async previous() {
-      if (!store.queue.length) {
+      const latestState = getLatestState();
+
+      if (!latestState.queue.length) {
         stopPlaybackGracefully({
           playbackStatus: 'idle',
           duration: engine.getDuration(),

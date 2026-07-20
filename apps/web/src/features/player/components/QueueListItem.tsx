@@ -1,5 +1,6 @@
 'use client';
 
+import { KeyboardEvent } from 'react';
 import { PauseCircle, PlayCircle, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { PlayableItem } from '../types';
@@ -17,10 +18,24 @@ export function QueueListItem({
   onPlay: () => void;
   onRemove: () => void;
 }) {
+  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      onPlay();
+    }
+  };
+
   return (
-    <div className={`flex items-start gap-3 rounded-2xl border px-3 py-3 ${isCurrent ? 'border-accent/40 bg-accent/10' : 'border-border bg-surface-secondary/70'}`}>
+    <div
+      className={`flex items-start gap-3 rounded-2xl border px-3 py-3 ${isCurrent ? 'border-accent/40 bg-accent/10' : 'border-border bg-surface-secondary/70'}`}
+      role="listitem"
+      aria-current={isCurrent ? 'true' : undefined}
+      aria-label={`${item.title}${isCurrent ? ', now playing' : ''}`}
+      tabIndex={0}
+      onKeyDown={handleKeyDown}
+    >
       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-surface-tertiary text-text-secondary">
-        {item.artworkUrl ? <img src={item.artworkUrl} alt="" className="h-full w-full rounded-xl object-cover" /> : <PlayCircle size={18} />}
+        {item.artworkUrl ? <img src={item.artworkUrl} alt="" aria-hidden="true" className="h-full w-full rounded-xl object-cover" /> : <PlayCircle size={18} />}
       </div>
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">

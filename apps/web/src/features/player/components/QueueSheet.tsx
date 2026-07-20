@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import { ListMusic, Trash2, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { usePlayerRuntime } from '../hooks/usePlayerRuntime';
@@ -10,6 +11,20 @@ import { QueueEmptyState } from './QueueEmptyState';
 export function QueueSheet({ open, onClose }: { open: boolean; onClose: () => void }) {
   const playerRuntime = usePlayerRuntime();
   const { queue, currentItem } = usePlayerState();
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    const previousActiveElement = document.activeElement as HTMLElement | null;
+    closeButtonRef.current?.focus();
+
+    return () => {
+      previousActiveElement?.focus();
+    };
+  }, [open]);
 
   if (!open) {
     return null;
@@ -21,16 +36,17 @@ export function QueueSheet({ open, onClose }: { open: boolean; onClose: () => vo
         className="absolute inset-x-0 bottom-0 rounded-t-3xl border border-border bg-surface-primary p-4 shadow-soft md:inset-y-0 md:right-0 md:left-auto md:w-[24rem] md:rounded-none md:rounded-l-3xl"
         role="dialog"
         aria-modal="true"
-        aria-label="Queue"
+        aria-labelledby="queue-sheet-title"
+        aria-describedby="queue-sheet-description"
         onClick={(event) => event.stopPropagation()}
       >
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-semibold text-text-primary">Queue</p>
-            <p className="text-xs text-text-secondary">{queue.length} item{queue.length === 1 ? '' : 's'}</p>
+            <p id="queue-sheet-title" className="text-sm font-semibold text-text-primary">Queue</p>
+            <p id="queue-sheet-description" className="text-xs text-text-secondary">{queue.length} item{queue.length === 1 ? '' : 's'}</p>
           </div>
           <div className="flex items-center gap-2">
-            <Button type="button" variant="ghost" size="sm" className="h-9 w-9 rounded-full p-0" onClick={onClose} aria-label="Close queue">
+            <Button ref={closeButtonRef} type="button" variant="ghost" size="sm" className="h-9 w-9 rounded-full p-0" onClick={onClose} aria-label="Close queue">
               <X size={16} />
             </Button>
           </div>

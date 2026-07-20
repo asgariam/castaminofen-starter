@@ -27,6 +27,19 @@ const resetStore = () => {
   });
 };
 
+const createTestEngine = () => ({
+  load() {},
+  async play() {},
+  pause() {},
+  stop() {},
+  setVolume() {},
+  setCurrentTime() {},
+  getCurrentTime() { return 0; },
+  getDuration() { return 0; },
+  subscribe() { return () => {}; },
+  destroy() {},
+});
+
 test('repeat queue wraps to the first item when advancing from the end of the queue', () => {
   resetStore();
   const store = usePlayerStore.getState();
@@ -262,18 +275,7 @@ test('loadItem reports a clear error when an item has no audio source', async ()
 
 test('next stops gracefully when the queue is empty', async () => {
   const store = usePlayerStore.getState();
-  const controller = createPlayerRuntimeController(store, {
-    load() {},
-    async play() {},
-    pause() {},
-    stop() {},
-    setVolume() {},
-    setCurrentTime() {},
-    getCurrentTime() { return 0; },
-    getDuration() { return 0; },
-    subscribe() { return () => {}; },
-    destroy() {},
-  });
+  const controller = createPlayerRuntimeController(store, createTestEngine());
 
   usePlayerStore.setState({
     ...store,
@@ -290,5 +292,143 @@ test('next stops gracefully when the queue is empty', async () => {
   const state = usePlayerStore.getState();
   assert.equal(state.playbackStatus, 'idle');
   assert.equal(state.error, null);
+  controller.destroy();
+});
+
+test('setCurrentItem normalizes the current index when the queue already exists', () => {
+  resetStore();
+  const items = [createItem('a'), createItem('b')];
+
+  usePlayerStore.setState({
+    ...usePlayerStore.getState(),
+    queue: items,
+    currentItem: null,
+    currentIndex: -1,
+  });
+
+  usePlayerStore.getState().setCurrentItem(items[0]);
+
+  const state = usePlayerStore.getState();
+  assert.equal(state.currentItem?.id, 'a');
+  assert.equal(state.currentIndex, 0);
+  assert.equal(state.playbackStatus, 'playing');
+});
+
+test('selectQueueItem keeps the active item consistent when the same item is selected again', async () => {
+  resetStore();
+  const items = [createItem('a'), createItem('b')];
+  const controller = createPlayerRuntimeController(usePlayerStore.getState(), createTestEngine());
+
+  usePlayerStore.setState({
+    ...usePlayerStore.getState(),
+    queue: items,
+    currentItem: items[0],
+    currentIndex: 0,
+    playbackStatus: 'playing',
+    isPlaying: true,
+  });
+
+  await controller.selectQueueItem(0);
+
+  const state = usePlayerStore.getState();
+  assert.equal(state.currentItem?.id, 'a');
+  assert.equal(state.currentIndex, 0);
+  assert.equal(state.playbackStatus, 'playing');
+  controller.destroy();
+});
+
+test('removeQueueItem keeps the current index valid when an item before the current one is removed', async () => {
+  resetStore();
+  const items = [createItem('a'), createItem('b'), createItem('c')];
+  const controller = createPlayerRuntimeController(usePlayerStore.getState(), createTestEngine());
+
+  usePlayerStore.setState({
+    ...usePlayerStore.getState(),
+    queue: items,
+    currentItem: items[1],
+    currentIndex: 1,
+    playbackStatus: 'playing',
+    isPlaying: true,
+  });
+
+  await controller.removeQueueItem(0);
+
+  const state = usePlayerStore.getState();
+  assert.deepEqual(state.queue.map((item) => item.id), ['b', 'c']);
+  assert.equal(state.currentItem?.id, 'b');
+  assert.equal(state.currentIndex, 0);
+  controller.destroy();
+});
+
+test('repeat one and shuffle can be enabled together without breaking the active queue item', async () => {
+  resetStore();
+  const items = [createItem('a'), createItem('b'), createItem('c')];
+  const controller = createPlayerRuntimeController(usePlayerStore.getState(), createTestEngine());
+
+  usePlayerStore.setState({
+    ...usePlayerStore.getState(),
+    queue: items,
+    currentItem: items[0],
+    currentIndex: 0,
+    repeatMode: 'one',
+    shuffleEnabled: true,
+    playbackStatus: 'playing',
+    isPlaying: true,
+  });
+
+  await controller.next();
+
+  const state = usePlayerStore.getState();
+  assert.equal(state.currentItem?.id, 'a');
+  assert.equal(state.repeatMode, 'one');
+  assert.equal(state.shuffleEnabled, true);
+  controller.destroy();
+});
+
+test('repeat queue with shuffle keeps the active item stable when the queue wraps', async () => {
+  resetStore();
+  const items = [createItem('a'), createItem('b'), createItem('c')];
+  const controller = createPlayerRuntimeController(usePlayerStore.getState(), createTestEngine());
+
+  usePlayerStore.setState({
+    ...usePlayerStore.getState(),
+    queue: items,
+    currentItem: items[2],
+    currentIndex: 2,
+    repeatMode: 'queue',
+    shuffleEnabled: true,
+    playbackStatus: 'playing',
+    isPlaying: true,
+  });
+
+  await controller.next();
+
+  const state = usePlayerStore.getState();
+  assert.ok(state.currentItem && ['a', 'b', 'c'].includes(state.currentItem.id));
+  assert.equal(state.repeatMode, 'queue');
+  assert.equal(state.shuffleEnabled, true);
+  controller.destroy();
+});
+
+test('runtime reports an error state and recovers when another item becomes available', async () => {
+  resetStore();
+  const controller = createPlayerRuntimeController(usePlayerStore.getState(), createTestEngine());
+
+  usePlayerStore.setState({
+    ...usePlayerStore.getState(),
+    queue: [createItem('a'), createItem('b')],
+    currentItem: createItem('a'),
+    currentIndex: 0,
+    playbackStatus: 'playing',
+    isPlaying: true,
+  });
+
+  usePlayerStore.getState().setPlaybackState({ playbackStatus: 'paused', error: 'Unable to load audio playback.' });
+  await controller.selectQueueItem(1);
+
+  const state = usePlayerStore.getState();
+  assert.equal(state.error, null);
+  assert.equal(state.currentItem?.id, 'b');
+  assert.equal(state.playbackStatus, 'playing');
   controller.destroy();
 });

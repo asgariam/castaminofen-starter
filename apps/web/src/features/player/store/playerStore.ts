@@ -43,17 +43,23 @@ export const usePlayerStore = create<PlayerState>((set) => ({
   repeatMode: 'off',
   shuffleEnabled: false,
   setCurrentItem: (item) =>
-    set((state) => ({
-      ...state,
-      currentItem: item,
-      queue: state.queue.length ? state.queue : [item],
-      currentIndex: state.queue.length ? state.currentIndex : 0,
-      isPlaying: true,
-      playbackStatus: 'playing',
-      currentPosition: 0,
-      duration: 0,
-      error: null,
-    })),
+    set((state) => {
+      const queue = state.queue.length ? state.queue : [item];
+      const foundIndex = queue.findIndex((queueItem) => queueItem.id === item.id);
+      const safeIndex = foundIndex >= 0 ? foundIndex : state.currentIndex >= 0 && state.currentIndex < queue.length ? state.currentIndex : 0;
+
+      return {
+        ...state,
+        currentItem: item,
+        queue,
+        currentIndex: safeIndex,
+        isPlaying: true,
+        playbackStatus: 'playing',
+        currentPosition: 0,
+        duration: 0,
+        error: null,
+      };
+    }),
   setPlaybackState: (state) =>
     set((currentState) => {
       const hasPlaybackStatus = Object.prototype.hasOwnProperty.call(state, 'playbackStatus');
@@ -182,16 +188,16 @@ export const usePlayerStore = create<PlayerState>((set) => ({
         return state;
       }
 
+      const currentIndex = state.currentIndex >= 0 && state.currentIndex < state.queue.length ? state.currentIndex : 0;
+
       if (state.shuffleEnabled) {
         const availableIndices = state.queue
           .map((_, index) => index)
-          .filter((index) => index !== state.currentIndex);
+          .filter((index) => index !== currentIndex);
 
-        if (!availableIndices.length) {
-          return state;
-        }
-
-        const targetIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)] ?? state.currentIndex;
+        const targetIndex = availableIndices.length
+          ? availableIndices[Math.floor(Math.random() * availableIndices.length)] ?? currentIndex
+          : currentIndex;
         nextItem = state.queue[targetIndex] ?? null;
 
         return {
@@ -201,20 +207,21 @@ export const usePlayerStore = create<PlayerState>((set) => ({
         };
       }
 
-      const isAtEnd = state.currentIndex >= state.queue.length - 1;
+      const isAtEnd = currentIndex >= state.queue.length - 1;
       const shouldWrap = state.repeatMode === 'queue' && isAtEnd;
 
       if (!shouldWrap && isAtEnd) {
         return state;
       }
 
-      const targetIndex = shouldWrap ? 0 : state.currentIndex + 1;
-      nextItem = state.queue[targetIndex] ?? null;
+      const targetIndex = shouldWrap ? 0 : currentIndex + 1;
+      const safeTargetIndex = targetIndex >= 0 && targetIndex < state.queue.length ? targetIndex : 0;
+      nextItem = state.queue[safeTargetIndex] ?? null;
 
       return {
         ...state,
         currentItem: nextItem,
-        currentIndex: targetIndex,
+        currentIndex: safeTargetIndex,
       };
     });
 
@@ -224,11 +231,17 @@ export const usePlayerStore = create<PlayerState>((set) => ({
     let previousItem: PlayableItem | null = null;
 
     set((state) => {
-      if (!state.queue.length || state.currentIndex <= 0) {
+      if (!state.queue.length) {
         return state;
       }
 
-      const targetIndex = state.currentIndex - 1;
+      const currentIndex = state.currentIndex >= 0 && state.currentIndex < state.queue.length ? state.currentIndex : 0;
+
+      if (currentIndex <= 0) {
+        return state;
+      }
+
+      const targetIndex = currentIndex - 1;
       previousItem = state.queue[targetIndex] ?? null;
 
       return {
